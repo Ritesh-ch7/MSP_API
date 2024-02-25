@@ -8,6 +8,7 @@ from sqlalchemy.orm import Session
 from src.database import session_local, engine
 from src import models
 from src.services.llmjob import add_to_llmjob_table
+from src.services.tasks import add_task
 
 models.base.metadata.create_all(bind = engine)
 def get_db():  
@@ -20,14 +21,17 @@ router = APIRouter()
 
 
 
-@router.post("/email")
-async def user_data(response: any = Depends(validate_input_data), db :Session = Depends(get_db), trace_id : str = None):
+@router.post("/{user_id}/email")
+async def user_data(user_id, response: any = Depends(validate_input_data), db :Session = Depends(get_db), trace_id : str = None):
     if(not trace_id):
         trace_id = str(uuid.uuid4())
+    # print("abc")
     try:
-        add_to_llmjob_table(response, db, trace_id)
-        # print('abc')
-        return await generate_email(response,trace_id)
+        llm_id = add_to_llmjob_table(response, db, trace_id)
+        task_id = add_task(llm_id, response, user_id, db, trace_id)
+        email_response = await generate_email(response,trace_id)
+        
+        return email_response
     except Exception as e:
         logger.error(f"{trace_id}: {e}")
         error_msg = f"Error in user_data function: {str(e)}"

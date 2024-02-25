@@ -28,7 +28,8 @@ def add_to_llmjob_table(ticket : Ticket, db:Session, trace_id : int = None):
         db.add(llm_job_record)
         db.commit()
         db.refresh(llm_job_record)
-        return True
+        # print(llm_job_record)
+        return llm_job_record.Id
     
     except Exception as e:
         logger.error(f'{trace_id} Could not add ticket deatils of ticket id {ticket.ticket_id} to the database')

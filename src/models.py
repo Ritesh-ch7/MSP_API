@@ -44,7 +44,7 @@ class Task(base):
 
     Id = Column(Integer,primary_key=True,autoincrement=True)
     LlmId = Column(Integer)
-    Feedback = Column(Enum(FeedbackEnum))
+    Feedback = Column(Enum(FeedbackEnum, default = 'Positive'))
     FailedReason = Column(String(100))
     Response = Column(String(100))
     Reference = Column(Text)
