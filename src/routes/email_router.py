@@ -9,7 +9,6 @@ router = APIRouter()
 
 @router.post("/email")
 async def user_data(response: any = Depends(validate_input_data),trace_id : str = None):
-    print("Here in router file")
     if(not trace_id):
         trace_id = str(uuid.uuid4())
     try:

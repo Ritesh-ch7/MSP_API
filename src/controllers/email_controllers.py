@@ -5,7 +5,6 @@ from src.schemas.users import *
 import uuid
 from src.config.logger_config import new_logger as logger
 
-
 async def generate_email(response: any, trace_id : str = None):
     if(not trace_id):
         trace_id = str(uuid.uuid4())
