@@ -3,7 +3,7 @@ from pydantic import BaseModel
 
 class TicketType(str, Enum):
     Incident = "Incident"
-    ServiceRequest = "Service Request"
+    ServiceRequest = "Service"
 
 class Service(str, Enum):
     Phonecall = "Phonecall"
