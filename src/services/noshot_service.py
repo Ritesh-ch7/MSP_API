@@ -17,7 +17,7 @@ def no_shot_body_template(ticket_id,requestor_name,message,priority,severity,tra
     if trace_id == None:
         trace_id = str(uuid.uuid4())
     try:
-        # print(ticket_id,requestor_name,message,priority,severity)
+        
         prompt="""Answer the question based on the context below. If the description of ticket provided in question cannot be answered or is out of context like "tell me a joke", "how are you", etc., then provide the answer with 'I don't know, kindly give me a detailed ticket description'.
     
         Context: You are an L1 resource of our company 'OSI Digital' and you have to write an acknowledgement email for the ticket to requester showing that you are working on resolving the issue. The ticket has ticket id, requester name, priority, severity and the description associated for each ticket which will be provided in the question.

@@ -46,9 +46,7 @@ async def validate_input_data(request: Request,trace_id:str = None):
 
         if not isinstance(data["ticket_id"], int):
             raise HTTPException(status_code=400, detail="Invalid data type in the ticket_id: expected int")
-        # print({Ticket(**ticket_data),reference_list})
-        # return {Ticket(**ticket_data),reference_list}
-        print("Here")
+            
         validated_item = Ticket(**data)
         return {"validated_item": validated_item, "reference_list": reference_list}
 
