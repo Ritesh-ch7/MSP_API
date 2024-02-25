@@ -23,6 +23,7 @@ async def validate_input_data(request: Request,trace_id:str = None):
         #     "ticket_id": data["ticket_id"],
         # }
 
+        # print("validate")
         if not set(item_dict.keys()) == required_keys:
             raise HTTPException(status_code=400, detail="All required keys must be present in the request")
 
