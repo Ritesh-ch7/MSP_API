@@ -57,3 +57,20 @@ def few_shot_body_template(ticket_id, requester_name, priority, severity, text, 
         return llm1.invoke(query).content
     except Exception as e:
         return f"error in test : {e}"
+
+
+        few_shot_template=FewShotPromptTemplate(
+        examples=examples,
+        example_prompt=example_prompt,
+        prefix=prefix,
+        suffix=suffix,
+        input_variables=["ticket_id","requester_name","text","priority","severity"]
+        )
+
+
+        query=few_shot_template.format(ticket_id=ticket_id, requester_name=requester_name, text=text, priority=priority, severity=severity, example=user_examples)
+
+
+        return llm1.invoke(query).content
+    except Exception as e:
+        return f"error in test : {e}"
