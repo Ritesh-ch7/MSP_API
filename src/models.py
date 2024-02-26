@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, Enum, String, DateTime, Text
+from sqlalchemy import Column, Integer, Enum, String, DateTime, Text, text
 from src.database import base
 import enum
 from datetime import datetime
@@ -23,7 +23,7 @@ class LLM(base):
     TicketId = Column(Integer, unique=True)
     RequestorName = Column(String(50))
     Severity = Column(Integer)
-    Priority = Column(Enum(PriorityEnum))
+    Priority = Column(Enum(PriorityEnum), default='Low')
     TicketType = Column(Enum(TickettypeEnum))
     Service = Column(Enum(ServiceEnum))
     Message = Column(String(100))
@@ -44,12 +44,12 @@ class Task(base):
 
     Id = Column(Integer,primary_key=True,autoincrement=True)
     LlmId = Column(Integer)
-    Feedback = Column(Enum(FeedbackEnum, default = 'Positive'))
+    Feedback = Column(Enum(FeedbackEnum),default=FeedbackEnum.Positive, nullable = False)
     FailedReason = Column(String(100))
     Response = Column(String(100))
     Reference = Column(Text)
     Status = Column(Enum(StatusEnum))
     CreatedAt = Column(DateTime, default=datetime.utcnow)
-    UpdatedAt = Column(DateTime, default=datetime.utcnow)
+    UpdatedAt = Column(DateTime)
     CreatedBy = Column(String(50))
     UpdatedBy = Column(String(50))
