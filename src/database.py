@@ -12,3 +12,4 @@ engine = create_engine("mysql+pymysql://root:password%404869@localhost:3306/msp_
 session_local = sessionmaker(autocommit=False,autoflush=False, bind=engine)
 
 base = declarative_base()
+
