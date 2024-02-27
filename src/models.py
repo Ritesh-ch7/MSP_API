@@ -11,7 +11,7 @@ class PriorityEnum(enum.Enum):
     
 class TickettypeEnum(enum.Enum):
     Incident = "Incident"
-    ServiceRequest = "Service Request"
+    Service = "Service"
 
 class ServiceEnum(enum.Enum):
     Phonecall = "Phonecall"
