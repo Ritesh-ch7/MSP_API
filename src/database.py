@@ -6,7 +6,6 @@ import os
 
 load_dotenv()
 
-
 db_key = os.getenv('DB_CONNECTION')
 engine = create_engine(db_key,pool_size=10, max_overflow=20)
 
