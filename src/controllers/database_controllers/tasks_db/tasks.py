@@ -9,14 +9,14 @@ import json
 from sqlalchemy.orm import Session
 from src.constants import *
 
-def add_task(llm_id, ticket, user_id, db, trace_id : str = None):
+def add_task(llm_id, reference_list, user_id, db, trace_id : str = None):
     if(not trace_id):
         trace_id = str(uuid.uudi4())
     
     try:
         task_record = {
             snake_to_pascal('llm_id'): llm_id,
-            snake_to_pascal('reference'): json.dumps(ticket['reference_list']),
+            snake_to_pascal('reference'): json.dumps(reference_list),
             snake_to_pascal('status'): 'Pending',
             snake_to_pascal('created_by'): user_id
             # snake_to_pascal('feedback') : 'Posiive'

@@ -7,7 +7,7 @@ load_dotenv()
 
 
 
-engine = create_engine("mysql+pymysql://root:password%404869@localhost:3306/msp_app")
+engine = create_engine("mysql+pymysql://root:MANOsince%402003@localhost:3306/MSP_API",pool_size=10, max_overflow=20)
 
 session_local = sessionmaker(autocommit=False,autoflush=False, bind=engine)
 

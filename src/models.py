@@ -1,4 +1,5 @@
-from sqlalchemy import Column, Integer, Enum, String, DateTime, Text, text
+from sqlalchemy import Column, Integer, Enum, String, DateTime, Text
+# from sqlalchemy.dialects.mysql import Text,LONGTEXT
 from src.database import base
 import enum
 from datetime import datetime
@@ -46,7 +47,7 @@ class Task(base):
     LlmId = Column(Integer)
     Feedback = Column(Enum(FeedbackEnum),default=FeedbackEnum.Positive, nullable = False)
     FailedReason = Column(String(100))
-    Response = Column(String(100))
+    Response = Column(Text)
     Reference = Column(Text)
     Status = Column(Enum(StatusEnum))
     CreatedAt = Column(DateTime, default=datetime.utcnow)

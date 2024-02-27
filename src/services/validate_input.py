@@ -1,61 +1,67 @@
-from fastapi import Request,HTTPException
+from fastapi import Request,HTTPException,Request
 from fastapi.encoders import jsonable_encoder
+from src.services.validate_reference import validate_reference_list
 from src.schemas.users import *
 import uuid
-from src.config.logger_config import new_logger as logger
 from src.constants import *
+from src.config.logger_config import new_logger as logger
+from src.services.add_missing_fields import add_missing_fields
 
 async def validate_input_data(request: Request,trace_id:str = None):
     if trace_id == None:
         trace_id = str(uuid.uuid4())
-
-    logger.debug(f'{trace_id} input ticket has been validated')
     try:
         data = await request.json()
         item_dict = jsonable_encoder(data)
         reference_list = data.get("reference", [])
         required_keys = {"ticket_type", "service", "priority", "severity", "requestor_name", "message", "ticket_id","reference"}
 
-        # ticket_data = {
-        #     "ticket_type": data["ticket_type"],
-        #     "service": data["service"],
-        #     "priority": data["priority"],
-        #     "severity": data["severity"],
-        #     "requestor_name": data["requestor_name"],
-        #     "message": data["message"],
-        #     "ticket_id": data["ticket_id"],
-        # }
-
         if not set(item_dict.keys()) == required_keys:
-            raise HTTPException(status_code=BAD_REQUEST, detail="All required keys must be present in the request")
+            logger.error(f"{trace_id}: all keys required") 
+            raise HTTPException(status_code=UNPROCESSABLE_ENTITY, message="All required keys must be present in the request")
 
         if data["ticket_type"] not in [e.value for e in TicketType]:
-            raise HTTPException(status_code=BAD_REQUEST, detail="Invalid entry value for ticket_type in the request: expected Incident or Service")
+            logger.error(f"{trace_id}:Invalid entry value for ticket_type in the request: expected Incident or Service ") 
+            raise HTTPException(status_code=UNPROCESSABLE_ENTITY, message="Invalid entry value for ticket_type in the request: expected Incident or Service")
 
         if data["service"] not in [e.value for e in Service]:
-            raise HTTPException(status_code=BAD_REQUEST, detail="Invalid entry value for service in the request: expected Phonecall or Email")
+            logger.error(f"{trace_id}:Invalid entry value for service in the request: expected Phonecall or Email") 
+            raise HTTPException(status_code=UNPROCESSABLE_ENTITY, message="Invalid entry value for service in the request: expected Phonecall or Email")
 
         if data["priority"] not in [e.value for e in Priority]:
-            raise HTTPException(status_code=BAD_REQUEST, detail="Invalid entry value for priority in the request: expected Low, Medium, or High")
+            logger.error(f"{trace_id}:Invalid entry value for priority in the request: expected Low, Medium, or High")
+            raise HTTPException(status_code=UNPROCESSABLE_ENTITY, message="Invalid entry value for priority in the request: expected Low, Medium, or High")
 
         if not isinstance(data["severity"], int) and not (data["severity"] > 4 and data["severity"]<=0) :
-            raise HTTPException(status_code=BAD_REQUEST, detail="Invalid data type in the severity: int from 1 to 4")
+            logger.error(f"{trace_id}:Invalid data type in the severity: int from 1 to 4")
+            raise HTTPException(status_code=UNPROCESSABLE_ENTITY, message="Invalid data type in the severity: int from 1 to 4")
 
         if not isinstance(data["requestor_name"], str):
-            raise HTTPException(status_code=BAD_REQUEST, detail="Invalid data type in requester name: expected string")
+            logger.error(f"{trace_id}:Invalid data type in requester name: expected string")
+            raise HTTPException(status_code=UNPROCESSABLE_ENTITY, message="Invalid data type in requester name: expected string")
 
         if not isinstance(data["message"], str):
-            raise HTTPException(status_code=BAD_REQUEST, detail="Invalid data type in the message: expected string")
+            logger.error(f"{trace_id}:Invalid data type in the message: expected string")
+            raise HTTPException(status_code=UNPROCESSABLE_ENTITY, message="Invalid data type in the message: expected string")
 
         if not isinstance(data["ticket_id"], int):
-            raise HTTPException(status_code=BAD_REQUEST, detail="Invalid data type in the ticket_id: expected int")
-            
-        validated_item = Ticket(**data)
-        logger.debug(f'{trace_id} input ticket has been validated')
+            logger.error(f"{trace_id}:Invalid data type in the ticket_id: expected int")
+            raise HTTPException(status_code=UNPROCESSABLE_ENTITY, message="Invalid data type in the ticket_id: expected int")
+        
+        validate_reference_list(reference_list)
+
+        for i in range(0,len(reference_list)):
+            reference_list[i] = add_missing_fields(reference_list[i])
+        print(reference_list)
+         
+        validated_item = Ticket(**item_dict)
+        logger.debug(f"{trace_id}: Input is validated")
         return {"validated_item": validated_item, "reference_list": reference_list}
 
     except HTTPException as http_exception:
+        logger.error(f"{trace_id}:Error in data validation")
         raise http_exception
 
     except Exception as e:
-        raise HTTPException(status_code=INTERNAL_SERVER_ERROR, detail=f"Internal Server Error: {str(e)}")
+        logger.error(f"{trace_id}:Fields in client side error")
+        raise HTTPException(status_code=UNPROCESSABLE_ENTITY, detail=f"Error: {str(e)}")
