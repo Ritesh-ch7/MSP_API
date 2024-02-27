@@ -16,6 +16,7 @@ async def update_task_response(task_id, generated_response, db,  trace_id):
 
     try:
     #    generated_response = generated_response.dict()
+    #    response = generated_response.body.decode('utf-8')
     #    generated_response = await generated_response.json()
     #    print(generated_response,type(generated_response))
 
