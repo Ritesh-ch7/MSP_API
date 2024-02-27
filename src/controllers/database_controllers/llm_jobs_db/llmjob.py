@@ -9,12 +9,12 @@ from sqlalchemy.orm import Session
 from src.constants import *
 
 
-def add_to_llmjob_table(ticket : Ticket, db:Session, trace_id : int = None):
+def add_to_llmjob_table(ticket : Ticket, db:Session, trace_id : str = None):
     if(trace_id == None):
         trace_id = str(uuid.uuid4())
 
     try: 
-        ticket = ticket['validated_item']
+        # ticket = ticket['validated_item']
         llm_job_record = {
             snake_to_pascal('ticket_type'): ticket.ticket_type.value,
             snake_to_pascal('service'): ticket.service.value,

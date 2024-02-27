@@ -8,16 +8,28 @@ from src import models
 from sqlalchemy.orm import Session
 from src.controllers.database_controllers.tasks_db.update_status import update_task_status
 from src.constants import *
+from sqlalchemy import func
 
-def update_response(task_id, generated_response, db,  trace_id):
+async def update_task_response(task_id, generated_response, db,  trace_id):
     if(not trace_id):
         trace_id = str(uuid.uuid4())
 
     try:
-       db.query(models.Task).filter(models.Task.Id == task_id).update({models.Task.Response : generated_response})
+    #    generated_response = generated_response.dict()
+    #    response = generated_response.body.decode('utf-8')
+    #    generated_response = await generated_response.json()
+    #    print(generated_response,type(generated_response))
+
+       db.query(models.Task).filter(models.Task.Id == task_id).update({models.Task.Response : generated_response, models.Task.UpdatedAt : func.now()})
        db.commit()
-       update_task_status(task_id, db, 'Completed', trace_id)
-       logger.debug(f'{trace_id} response for task with task id {task_id} is updated')
+        # print(len(generated_response))
+        # if len(generated_response) <= 65535:  #
+        #     db.query(models.Task).filter(models.Task.Id == task_id).update({models.Task.Response: generated_response,models.Task.UpdatedAt: func.now()})
+        #     db.commit()
+        # else:
+        #     print("Error: Data too long for column 'Response'")
+        #     update_task_status(task_id, db, 'Completed', trace_id)
+        #     logger.debug(f'{trace_id} response for task with task id {task_id} is updated')
 
     except Exception as e:
         logger.error(f'{trace_id} Could not add response to the task with id {task_id}')
