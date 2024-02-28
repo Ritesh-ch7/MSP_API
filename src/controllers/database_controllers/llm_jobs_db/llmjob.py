@@ -4,9 +4,10 @@ from src.schemas.users import *
 from fastapi import HTTPException, Depends
 from src.utils.snake_case_to_pascal import snake_to_pascal
 from src.database import session_local, engine
-from src import models
+# from src import models
+from src.models.llm_model import LLM
 from sqlalchemy.orm import Session
-from src.constants import *
+from src.utils.constants import *
 
 
 def add_to_llmjob_table(ticket : Ticket, db:Session, trace_id : str = None):
@@ -25,7 +26,7 @@ def add_to_llmjob_table(ticket : Ticket, db:Session, trace_id : str = None):
             snake_to_pascal('ticket_id'): ticket.ticket_id
         }
 
-        llm_job_record = models.LLM(**llm_job_record)
+        llm_job_record = LLM(**llm_job_record)
         db.add(llm_job_record)
         db.commit()
         db.refresh(llm_job_record)

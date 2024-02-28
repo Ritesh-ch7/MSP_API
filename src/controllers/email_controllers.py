@@ -4,7 +4,7 @@ from src.services.noshot_service import no_shot_body_template
 from src.schemas.users import *
 import uuid
 from src.config.logger_config import new_logger as logger
-from src.constants import *
+from src.utils.constants import *
 
 async def generate_email(response: any,llm_id, trace_id : str = None):
     if(not trace_id):
