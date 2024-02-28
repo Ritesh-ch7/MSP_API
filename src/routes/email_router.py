@@ -5,7 +5,7 @@ from src.services.validate_input import validate_input_data
 from fastapi.responses import JSONResponse
 from src.config.logger_config import new_logger as logger
 from sqlalchemy.orm import Session
-from MSP_API.src.config.database import session_local, engine
+from src.config.database import session_local, engine
 from src.models import llm_model, tasks_model
 from src.controllers.database_controllers.llm_jobs_db.llmjob import create_llmjob
 from src.controllers.database_controllers.tasks_db.tasks import create_task

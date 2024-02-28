@@ -7,7 +7,7 @@ from MSP_API.src.config.database import session_local, engine
 from src.models import llm_model,tasks_model
 from sqlalchemy.orm import Session
 from datetime import datetime
-from MSP_API.src.utils.constants import *
+from src.constants import *
 from sqlalchemy import func
 
 def update_task_status(task_id, db, task_status, trace_id):
