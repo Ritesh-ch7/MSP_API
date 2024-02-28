@@ -14,7 +14,7 @@ api_key = os.getenv("API_KEY")
  
 llm1 = ChatOpenAI(openai_api_key=api_key, temperature=0.3)
  
-def few_shot_body_template(ticket_id, requester_name, priority, severity, text, user_examples, trace_id : str = None):
+def few_shot_body_template(ticket_id, requester_name, priority, severity, description, user_examples, trace_id : str = None):
     if (trace_id == None):
         trace_id = str(uuid.uuid4())
  
@@ -22,8 +22,8 @@ def few_shot_body_template(ticket_id, requester_name, priority, severity, text, 
         examples = user_examples
  
         example_prompt=PromptTemplate(
-        input_variables=["ticket_id","requester_name","text","priority","severity","ref"],
-        template = FEW_SHOT_TEMPLATE
+        input_variables=["ticket_id","requester_name","description","priority","severity","ref"],
+        template = FEW_SHOT_PROMPT
         )
  
         few_shot_template=FewShotPromptTemplate(
@@ -31,11 +31,11 @@ def few_shot_body_template(ticket_id, requester_name, priority, severity, text, 
         example_prompt=example_prompt,
         prefix=FEW_SHOT_PREFIX,
         suffix=FEW_SHOT_SUFFIX,
-        input_variables=["ticket_id","requester_name","text","priority","severity"]
+        input_variables=["ticket_id","requester_name","description","priority","severity"]
         )
  
         logger.debug(f'{trace_id} email for no shot has been generated')
-        query=few_shot_template.format(ticket_id=ticket_id, requester_name=requester_name, text=text, priority=priority, severity=severity, example=user_examples)
+        query=few_shot_template.format(ticket_id=ticket_id, requester_name=requester_name, description=description, priority=priority, severity=severity, example=user_examples)
 
         return llm1.invoke(query).content
     

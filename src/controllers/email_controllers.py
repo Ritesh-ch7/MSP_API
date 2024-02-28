@@ -18,7 +18,7 @@ async def generate_email(response: any,llm_id, trace_id : str = None):
             generated_mail =  no_shot_body_template(validated_item.ticket_id,validated_item.requestor_name,validated_item.message,validated_item.priority,validated_item.severity,trace_id)
             logger.info(f"{trace_id}: Response sent sucessfully")
             return JSONResponse(content={
-                "subject": generated_mail,
+                "body": generated_mail,
                 "llm_id": llm_id
             }, status_code = OK)
 
@@ -26,7 +26,7 @@ async def generate_email(response: any,llm_id, trace_id : str = None):
             generated_mail =  few_shot_body_template(validated_item.ticket_id, validated_item.requestor_name, validated_item.priority, validated_item.severity, validated_item.message, reference, trace_id)
             logger.info(f"{trace_id}: Response sent sucessfully")
             return JSONResponse(content={
-                "subject": generated_mail,
+                "body": generated_mail,
                 "llm_id": llm_id
             }, status_code = OK)
 
