@@ -14,17 +14,17 @@ api_key = os.getenv("API_KEY")
 llm1 = ChatOpenAI(openai_api_key=api_key, temperature=0.3)
  
  
-def no_shot_body_template(ticket_id,requestor_name,message,priority,severity,trace_id:str = None):
+def no_shot_body_template(ticket_id,requestor_name,description,priority,severity,trace_id:str = None):
     if trace_id == None:
         trace_id = str(uuid.uuid4())
     try:
 
         no_shot_template=PromptTemplate(
-            input_variables=["ticket_id","requestor_name","message","priority","severity"],
+            input_variables=["ticket_id","requestor_name","description","priority","severity"],
             template=NO_SHOT_PROMPT
         )
        
-        query=no_shot_template.format(ticket_id=ticket_id, requestor_name=requestor_name, message=message, priority=priority, severity=severity)
+        query=no_shot_template.format(ticket_id=ticket_id, requestor_name=requestor_name, description=description, priority=priority, severity=severity)
         res =  llm1.invoke(query)
 
         logger.debug(f'{trace_id} email for no shot has been generated')
