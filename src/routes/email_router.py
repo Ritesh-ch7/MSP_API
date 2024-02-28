@@ -1,4 +1,4 @@
-from fastapi import APIRouter,Depends, Request
+from fastapi import APIRouter,Depends, Request,HTTPException
 import uuid
 from src.controllers.email_controllers import generate_email
 from src.services.validate_input import validate_input_data
@@ -10,6 +10,7 @@ from src import models
 from src.controllers.database_controllers.llm_jobs_db.llmjob import add_to_llmjob_table
 from src.controllers.database_controllers.tasks_db.tasks import add_task
 from src.controllers.database_controllers.tasks_db.update_status import update_task_status
+from src.services.regenerate_service import regenerate_mail_template
 from src.controllers.database_controllers.tasks_db.update_response import update_task_response
 from src.constants import *
 
@@ -54,6 +55,27 @@ async def user_data(user_id, request : Request, db :Session = Depends(get_db), t
         error_msg = f"Error in updating the task: {str(e)}"
         update_task_status(task_id, db, 'Failed', trace_id)
         return JSONResponse(content={"message": error_msg}, status_code = INTERNAL_SERVER_ERROR)
+
+@router.post('/{user_id}/regenerate')
+async def user_data(request : Request, db :Session = Depends(get_db), trace_id : str = None):
+    if(not trace_id):
+        trace_id = str(uuid.uuid4())
+    
+    try:
+        request_data = await request.json()
+        email = request_data.get('body',None)
+        if email:
+            regenerated_email = regenerate_mail_template(email)
+            return JSONResponse(content={"message": regenerated_email}, status_code = INTERNAL_SERVER_ERROR)
+            
+        else:
+            raise HTTPException(status_code=400, message="missing body")
+        
+    except Exception as e:
+        logger.error(f"{trace_id}: {e}")
+        error_msg = f"Error in user_data function: {str(e)}"
+        return JSONResponse(content={"message": error_msg}, status_code = INTERNAL_SERVER_ERROR)
+
 
 
     
