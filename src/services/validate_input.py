@@ -14,7 +14,7 @@ async def validate_input_data(request: Request,trace_id:str = None):
         data = await request.json()
         item_dict = jsonable_encoder(data)
         reference_list = data.get("reference", [])
-        required_keys = {"ticket_type", "service", "priority", "severity", "requestor_name", "message", "ticket_id","reference"}
+        required_keys = {"ticket_type", "service", "priority", "severity", "requestor_name", "description", "ticket_id","reference"}
 
         if not set(item_dict.keys()) == required_keys:
             logger.error(f"{trace_id}: all keys required") 
@@ -40,9 +40,9 @@ async def validate_input_data(request: Request,trace_id:str = None):
             logger.error(f"{trace_id}:Invalid data type in requester name: expected string")
             raise HTTPException(status_code=UNPROCESSABLE_ENTITY, message="Invalid data type in requester name: expected string")
 
-        if not isinstance(data["message"], str):
-            logger.error(f"{trace_id}:Invalid data type in the message: expected string")
-            raise HTTPException(status_code=UNPROCESSABLE_ENTITY, message="Invalid data type in the message: expected string")
+        if not isinstance(data["description"], str):
+            logger.error(f"{trace_id}:Invalid data type in the description: expected string")
+            raise HTTPException(status_code=UNPROCESSABLE_ENTITY, message="Invalid data type in the description: expected string")
 
         if not isinstance(data["ticket_id"], int):
             logger.error(f"{trace_id}:Invalid data type in the ticket_id: expected int")

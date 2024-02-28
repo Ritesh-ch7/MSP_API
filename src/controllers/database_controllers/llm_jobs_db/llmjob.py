@@ -21,7 +21,7 @@ def add_to_llmjob_table(ticket : Ticket, db:Session, trace_id : str = None):
             snake_to_pascal('priority'): ticket.priority.value,
             snake_to_pascal('severity'): ticket.severity,
             snake_to_pascal('requestor_name'): ticket.requestor_name,
-            snake_to_pascal('message'): ticket.message,
+            snake_to_pascal('description'): ticket.description,
             snake_to_pascal('ticket_id'): ticket.ticket_id
         }
 
