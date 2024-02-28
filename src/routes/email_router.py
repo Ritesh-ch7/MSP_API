@@ -5,15 +5,15 @@ from src.services.validate_input import validate_input_data
 from fastapi.responses import JSONResponse
 from src.config.logger_config import new_logger as logger
 from sqlalchemy.orm import Session
-from src.database import session_local, engine
-from src import models
-from src.controllers.database_controllers.llm_jobs_db.llmjob import add_to_llmjob_table
-from src.controllers.database_controllers.tasks_db.tasks import add_task
+from src.config.database import session_local, engine
+from src.models import llm_model, tasks_model
+from src.controllers.database_controllers.llm_jobs_db.llmjob import create_llmjob
+from src.controllers.database_controllers.tasks_db.tasks import create_task
 from src.controllers.database_controllers.tasks_db.update_status import update_task_status
 from src.controllers.database_controllers.tasks_db.update_response import update_task_response
-from src.constants import *
+from src.utils.constants import *
 
-models.base.metadata.create_all(bind = engine)
+llm_model.base.metadata.create_all(bind = engine)
 def get_db():  
     db = session_local()
     try:
@@ -32,8 +32,8 @@ async def user_data(user_id, request : Request, db :Session = Depends(get_db), t
     try:
         response = await validate_input_data(request, trace_id)
 
-        llm_id = add_to_llmjob_table(response['validated_item'], db, trace_id)
-        task_id = add_task(llm_id, response['reference_list'], user_id, db, trace_id)
+        llm_id = create_llmjob(response['validated_item'], db, trace_id)
+        task_id = create_task(llm_id, response['reference_list'], user_id, db, trace_id)
         
     except Exception as e:
         logger.error(f"{trace_id}: {e}")
