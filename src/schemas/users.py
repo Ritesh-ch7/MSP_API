@@ -20,5 +20,5 @@ class Ticket(BaseModel):
     priority: Priority
     severity: int
     requestor_name: str
-    message: str
+    description: str
     ticket_id: int

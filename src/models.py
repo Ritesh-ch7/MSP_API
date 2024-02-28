@@ -27,7 +27,7 @@ class LLM(base):
     Priority = Column(Enum(PriorityEnum), default='Low')
     TicketType = Column(Enum(TickettypeEnum))
     Service = Column(Enum(ServiceEnum))
-    Message = Column(String(100))
+    Description = Column(String(100))
 
 
 class FeedbackEnum(enum.Enum):
