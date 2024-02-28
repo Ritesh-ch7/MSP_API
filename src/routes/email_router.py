@@ -44,7 +44,8 @@ async def user_data(user_id, request : Request, db :Session = Depends(get_db), t
         update_task_status(task_id, db, 'Inprogress', trace_id)
         email_response = await generate_email(response,llm_id,trace_id)
         print(email_response)
-        await update_task_response(task_id, email_response,db,trace_id)
+        res = email_response.body.decode('utf-8')
+        await update_task_response(task_id, res,db,trace_id)
         
         logger.info("Email generated successfully")
         return email_response

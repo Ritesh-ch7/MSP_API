@@ -15,21 +15,12 @@ async def update_task_response(task_id, generated_response, db,  trace_id):
         trace_id = str(uuid.uuid4())
 
     try:
-    #    generated_response = generated_response.dict()
-    #    response = generated_response.body.decode('utf-8')
-    #    generated_response = await generated_response.json()
-    #    print(generated_response,type(generated_response))
-
+       
        db.query(models.Task).filter(models.Task.Id == task_id).update({models.Task.Response : generated_response, models.Task.UpdatedAt : func.now()})
        db.commit()
-        # print(len(generated_response))
-        # if len(generated_response) <= 65535:  #
-        #     db.query(models.Task).filter(models.Task.Id == task_id).update({models.Task.Response: generated_response,models.Task.UpdatedAt: func.now()})
-        #     db.commit()
-        # else:
-        #     print("Error: Data too long for column 'Response'")
-        #     update_task_status(task_id, db, 'Completed', trace_id)
-        #     logger.debug(f'{trace_id} response for task with task id {task_id} is updated')
+       update_task_status(task_id, db, 'Completed', trace_id)
+       logger.debug(f'{trace_id} response for task with task id {task_id} is updated')
+        
 
     except Exception as e:
         logger.error(f'{trace_id} Could not add response to the task with id {task_id}')
