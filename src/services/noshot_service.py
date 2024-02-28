@@ -2,7 +2,7 @@ from langchain.chat_models import ChatOpenAI
 from langchain.llms import OpenAI
 from langchain.prompts.chat import ChatPromptTemplate
 from langchain import PromptTemplate
-from src.constants import *
+from MSP_API.src.utils.constants import *
 from fastapi import HTTPException
 from dotenv import load_dotenv
 import os, uuid

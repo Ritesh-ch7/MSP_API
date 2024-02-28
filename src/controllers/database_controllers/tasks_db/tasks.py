@@ -3,11 +3,11 @@ from src.config.logger_config import new_logger as logger
 from src.schemas.users import *
 from fastapi import HTTPException, Depends
 from src.utils.snake_case_to_pascal import snake_to_pascal
-from src.database import session_local, engine
+from MSP_API.src.config.database import session_local, engine
 from src.models import llm_model, tasks_model
 import json
 from sqlalchemy.orm import Session
-from src.constants import *
+from MSP_API.src.utils.constants import *
 
 def create_task(llm_id, reference_list, user_id, db, trace_id : str = None):
     if(not trace_id):

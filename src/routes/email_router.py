@@ -5,13 +5,13 @@ from src.services.validate_input import validate_input_data
 from fastapi.responses import JSONResponse
 from src.config.logger_config import new_logger as logger
 from sqlalchemy.orm import Session
-from src.database import session_local, engine
+from MSP_API.src.config.database import session_local, engine
 from src.models import llm_model, tasks_model
 from src.controllers.database_controllers.llm_jobs_db.llmjob import create_llmjob
 from src.controllers.database_controllers.tasks_db.tasks import create_task
 from src.controllers.database_controllers.tasks_db.update_status import update_task_status
 from src.controllers.database_controllers.tasks_db.update_response import update_task_response
-from src.constants import *
+from MSP_API.src.utils.constants import *
 
 llm_model.base.metadata.create_all(bind = engine)
 def get_db():  

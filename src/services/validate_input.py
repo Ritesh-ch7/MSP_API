@@ -3,7 +3,7 @@ from fastapi.encoders import jsonable_encoder
 from src.services.validate_reference import validate_reference_list
 from src.schemas.users import *
 import uuid
-from src.constants import *
+from MSP_API.src.utils.constants import *
 from src.config.logger_config import new_logger as logger
 from src.services.add_missing_fields import add_missing_fields
 
