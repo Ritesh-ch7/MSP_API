@@ -11,7 +11,7 @@ from src.controllers.database_controllers.llm_jobs_db.llmjob import create_llmjo
 from src.controllers.database_controllers.tasks_db.tasks import create_task
 from src.controllers.database_controllers.tasks_db.update_status import update_task_status
 from src.controllers.database_controllers.tasks_db.update_response import update_task_response
-from MSP_API.src.utils.constants import *
+from src.utils.constants import *
 
 llm_model.base.metadata.create_all(bind = engine)
 def get_db():  
