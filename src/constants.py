@@ -26,7 +26,7 @@ NO_SHOT_PROMPT="""
         Answer:"""
 
 FEW_SHOT_PROMPT = """
-        User: Write an acknowledgement email body for ticket with ticket id- {ticket_id} to the requester- {requester_name} stating that you are working regarding the issue- {description}. The ticket's priority is {priority} and also the severity of the ticket is {severity} where 4 means high severity and 1 has low severity. If the requester's priority and severity is low, don't mention the priority and severity explicitly in the mail but if the priority and severity is high then stress in the mail that we are working really hard and its our topmost priority like that. Generate the mail body having content of around 5-6 lines. I only need the email body and not subject of the mail. Also, at the end after regards, I only want OSI Digital, I don't want name to be mentioned after regards. 
+        User: Write an acknowledgement email body for ticket with ticket id- {ticket_id} to the requester- {requester_name} stating that you are working regarding the issue- {text}. The ticket's priority is {priority} and also the severity of the ticket is {severity} where 4 means high severity and 1 has low severity. If the requester's priority and severity is low, don't mention the priority and severity explicitly in the mail but if the priority and severity is high then stress in the mail that we are working really hard and its our topmost priority like that. Generate the mail body having content of around 5-6 lines. I only need the email body and not subject of the mail. Also, at the end after regards, I only want OSI Digital, I don't want name to be mentioned after regards. 
         AI: {ref}
         """
 
@@ -35,7 +35,7 @@ FEW_SHOT_PREFIX = """
  
 
 FEW_SHOT_SUFFIX = """
-        User: Now generate a mail body which is almost similar to the above given examples and make sure the new mail generated is matching the current ticket details which is being provided now where the ticket id is-{ticket_id}, the requester name is -{requester_name}, the ticket description is- {description}. The ticket's priority is - {priority} and also the severity of the ticket is -{severity} where 4 means high severity and 1 has low severity. I only need the email body and not subject of the mail. Also, at the end after regards, I only want OSI Digital, I don't want name to be mentioned after regards. 
+        User: Now generate a mail body which is almost similar to the above given examples and make sure the new mail generated is matching the current ticket details which is being provided now where the ticket id is-{ticket_id}, the requester name is -{requester_name}, the ticket description is- {text}. The ticket's priority is - {priority} and also the severity of the ticket is -{severity} where 4 means high severity and 1 has low severity. I only need the email body and not subject of the mail. Also, at the end after regards, I only want OSI Digital, I don't want name to be mentioned after regards. 
         AI: """
 
 REGENERATE_PROMPT="""
