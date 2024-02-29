@@ -49,7 +49,8 @@ async def user_data(user_id, request : Request, db :Session = Depends(get_db), t
     try:
         update_task_status(task_id, db, 'Inprogress', trace_id)
         email_response = await generate_email(response,llm_id,trace_id)
-        print(email_response)
+        # print(email_response)
+        
         res = email_response.body.decode('utf-8')
 
         res_with_newline=res.replace("\\n","\n")
