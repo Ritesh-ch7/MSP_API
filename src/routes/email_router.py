@@ -35,8 +35,8 @@ async def user_data(user_id, request : Request, db :Session = Depends(get_db), t
     
     try:
         update_task_status(task_id, db, 'Inprogress', trace_id)
-        print("herre")
         email_response = await generate_email(response,db,llm_id,task_id,trace_id)
+        update_task_status(task_id, db, 'Completed', trace_id)
         res = email_response.body.decode('utf-8')
         res_with_newline=res.replace("\\n","\n")
 
@@ -58,6 +58,7 @@ async def regenerate(request : Request, user_id,  db :Session = Depends(get_db),
         trace_id = str(uuid.uuid4())
     try:
         regenerated_mail = await regenerate_mail(request,user_id, db, trace_id)
+        
 
         res = regenerated_mail.body.decode('utf-8')
         res_with_newline=res.replace("\\n","\n")\

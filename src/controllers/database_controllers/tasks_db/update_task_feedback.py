@@ -18,6 +18,7 @@ async def update_task_feedback(llm_id, db, task_feedback, trace_id):
     try:
        task = db.query(Task).filter(Task.LlmId == llm_id).order_by(Task.Id.desc()).first()
        task.Feedback = 'Negative' 
+       task.UpdatedAt = func.now()
        db.commit()
 
 

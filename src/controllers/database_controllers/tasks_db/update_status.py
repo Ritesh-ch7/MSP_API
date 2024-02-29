@@ -16,11 +16,12 @@ def update_task_status(task_id, db, task_status, trace_id):
         trace_id = str(uuid.uuid4())
 
     try:
-       task = db.query(Task).filter(Task.Id == task_id)
-       if task:
-            task.Status = task_status
-            task.UpdatedAt = func.now()
-            db.commit()
+        db.query(Task).filter(Task.Id == task_id).update({Task.Status : task_status, Task.UpdatedAt : func.now()})
+        # if task:
+        #     task.Status = task_status
+        #     task.UpdatedAt = func.now()
+        
+        db.commit()
        
 
     except Exception as e:

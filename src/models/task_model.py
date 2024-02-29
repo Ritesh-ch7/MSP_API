@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, Enum, String, DateTime, Text, JSON
+from sqlalchemy import Column, Integer, Enum, String, DateTime, Text, JSON, func
 from src.config.database import base
 import enum
 from datetime import datetime
@@ -13,7 +13,7 @@ class Task(base):
     Response = Column(JSON)
     Reference = Column(Text)
     Status = Column(Enum('Pending', 'Inprogress', 'Completed', 'Failed'))
-    CreatedAt = Column(DateTime, default=datetime.utcnow)
+    CreatedAt = Column(DateTime, default=func.now())
     UpdatedAt = Column(DateTime)
     CreatedBy = Column(String(50))
     UpdatedBy = Column(String(50))
