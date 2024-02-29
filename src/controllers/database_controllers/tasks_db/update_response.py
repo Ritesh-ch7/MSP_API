@@ -17,13 +17,10 @@ async def update_task_response(task_id, generated_response, db,  trace_id):
 
     try:
        
-       task = db.query(Task).filter(Task.Id == task_id)
-       if task:
-            task.Response = generated_response
-            task.UpdatedAt = func.now()
-            db.commit()
-       await update_task_status(task_id, db, 'Completed', trace_id)
-       logger.debug(f'{trace_id} response for task with task id {task_id} is updated')
+        db.query(Task).filter(Task.Id == task_id).update({Task.Response : generated_response, Task.UpdatedAt : func.now()})
+        db.commit()
+        update_task_status(task_id, db, 'Completed', trace_id)
+        logger.debug(f'{trace_id} response for task with task id {task_id} is updated')
         
 
     except Exception as e:

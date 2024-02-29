@@ -10,7 +10,7 @@ from sqlalchemy.orm import Session
 from src.utils.constants import *
 
 
-async def add_to_llmjob_table(ticket : Ticket, db:Session, trace_id : str = None):
+def add_to_llmjob_table(ticket : Ticket, db:Session, trace_id : str = None):
     if(trace_id == None):
         trace_id = str(uuid.uuid4())
 

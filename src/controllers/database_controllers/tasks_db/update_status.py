@@ -11,7 +11,7 @@ from datetime import datetime
 from src.utils.constants import *
 from sqlalchemy import func
 
-async def update_task_status(task_id, db, task_status, trace_id):
+def update_task_status(task_id, db, task_status, trace_id):
     if(not trace_id):
         trace_id = str(uuid.uuid4())
 

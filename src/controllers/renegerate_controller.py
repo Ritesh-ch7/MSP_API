@@ -16,14 +16,8 @@ async def regenerate_mail(request:Request,user_id, db, trace_id):
         subject = request_data.get('subject',None)
         llm_id = request_data.get('llm_id',None)
 
-<<<<<<< HEAD
-        await update_task_feedback(llm_id, db, trace_id)
-
-        task_id = await add_task(llm_id,[], user_id, db, trace_id)
-=======
         task_id = add_task(llm_id,[], user_id, db, trace_id)
-        await update_task_feedback(llm_id, db, 'Negative', trace_id)
->>>>>>> parent of a2b204f (added feedback update function)
+        # await update_task_feedback(llm_id, db, 'Negative', trace_id)
 
         if body and llm_id and subject:
             regenerated_mail_body = regenerate_mail_template(body,llm_id)
