@@ -24,11 +24,11 @@ def regenerate_mail_template(prev_emails,trace_id:str = None):
             template=REGENERATE_PROMPT
         )
 
-        query=regenerate_template.format(prev_emails=prev_emails)
+        query = regenerate_template.format(prev_emails=prev_emails)
         res =  llm1.invoke(query)
-
         logger.debug(f'{trace_id} email has been re-generated')
-        return JSONResponse(content={"body":res.content},status_code = OK)
+        return res.content
+        
     
     except Exception as e:
         logger.error(f'{trace_id} email cant be generated {e}')
