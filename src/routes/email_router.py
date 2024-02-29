@@ -1,4 +1,5 @@
 from fastapi import APIRouter,Depends, Request
+from fastapi.responses import Response
 import uuid
 from src.controllers.email_controllers import generate_email
 from src.services.validate_input import validate_input_data
@@ -50,10 +51,14 @@ async def user_data(user_id, request : Request, db :Session = Depends(get_db), t
         email_response = await generate_email(response,llm_id,trace_id)
         print(email_response)
         res = email_response.body.decode('utf-8')
-        await update_task_response(task_id, res,db,trace_id)
+
+        res_with_newline=res.replace("'\\n","\n")
+
+        await update_task_response(task_id, res_with_newline,db,trace_id)
         
         logger.info("Email generated successfully")
-        return email_response
+        email_with_newline=Response(content=res_with_newline, media_type="text/plain")
+        return email_with_newline
     
     except Exception as e:
         logger.error(f"{trace_id} : Task has been terminated {e}")
