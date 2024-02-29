@@ -13,6 +13,7 @@ api_key = os.getenv("API_KEY")
  
 llm1 = ChatOpenAI(openai_api_key=api_key, temperature=0.3)
  
+ #hello world
  
 def no_shot_body_template(ticket_id,requestor_name,description,priority,severity,trace_id:str = None):
     if trace_id == None:
