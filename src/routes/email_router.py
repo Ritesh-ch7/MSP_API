@@ -6,31 +6,17 @@ from src.services.validate_input import validate_input_data
 from fastapi.responses import JSONResponse
 from src.config.logger_config import new_logger as logger
 from sqlalchemy.orm import Session
-from src.config.database import session_local, engine
-# from src import models
 from src.controllers.database_controllers.llm_jobs_db.llmjob import add_to_llmjob_table
 from src.controllers.database_controllers.tasks_db.tasks import add_task
 from src.controllers.database_controllers.tasks_db.update_status import update_task_status
-from src.services.regenerate_service import regenerate_mail_template
 from src.controllers.database_controllers.tasks_db.update_response import update_task_response
 from src.utils.constants import *
-from src.models.llm_model import LLM
-from src.models.task_model import Task
-from src.config.database import base
+from src.config.get_db import get_db
 from src.controllers.renegerate_controller import regenerate_mail
 
-
-models = [LLM,Task]
-
-base.metadata.create_all(bind=engine, tables=[model.__table__ for model in models])
-def get_db():  
-    db = session_local()
-    try:
-        yield db
-    finally:
-        db.close()
-
 router = APIRouter()
+
+
 
 @router.post("/{user_id}/email")
 async def user_data(user_id, request : Request, db :Session = Depends(get_db), trace_id : str = None):
