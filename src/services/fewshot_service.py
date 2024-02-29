@@ -3,7 +3,7 @@ from langchain.llms import OpenAI
 from langchain.prompts.chat import ChatPromptTemplate
 from langchain import PromptTemplate
 from langchain import FewShotPromptTemplate
-from src.constants import *
+from src.utils.constants import *
 from fastapi import HTTPException
 from dotenv import load_dotenv
 import os, uuid

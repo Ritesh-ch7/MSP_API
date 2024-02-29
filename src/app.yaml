@@ -1,0 +1,129 @@
+openapi: 3.0.0
+
+info:
+  title: MSP API
+  version: 0.1.0
+
+tags:
+  - name: MSP
+    description: API for Managed Service Provider
+
+servers:
+  - url: https://api.example.com/v1
+
+paths:
+  /api/v1/email:
+    post:
+      summary: Generate Email
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/TicketRequestForm'
+      responses:
+        200:
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EmailResponse'
+        422:
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        500:
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+components:
+  schemas:
+    Error:
+      title: Error
+      properties:
+        message:
+          type: string
+    TicketRequestForm:
+      type: object
+      properties:
+        ticket_type:
+          $ref: '#/components/schemas/TicketType'
+        service:
+          $ref: '#/components/schemas/Service'
+        priority:
+          $ref: '#/components/schemas/Priority'
+        severity:
+          $ref: '#/components/schemas/Severity'
+        requestor_name:
+          type: string
+        message:
+          type: string
+        ticket_id:
+          type: integer
+        reference:
+          type: array
+          items:
+            type: object
+            properties:
+              ticket_type:
+                $ref: '#/components/schemas/TicketType'
+              service:
+                $ref: '#/components/schemas/Service'
+              priority:
+                $ref: '#/components/schemas/Priority'
+              severity:
+                $ref: '#/components/schemas/Severity'
+              requestor_name:
+                type: string
+              text:
+                type: string
+              ticket_id:
+                type: integer
+              ref:
+                type: string
+            required:
+              - ref
+      required:
+        - ticket_type
+        - service
+        - priority
+        - severity
+        - requestor_name
+        - message
+        - ticket_id
+        - reference
+      title: TicketRequestForm
+    TicketType:
+      type: string
+      enum:
+        - Incident
+        - Service
+    Service:
+      type: string
+      enum:
+        - Phonecall
+        - Email
+    Severity:
+      type: integer
+      enum:
+        - 1
+        - 2
+        - 3
+        - 4
+    Priority:
+      type: string
+      enum:
+        - High
+        - Medium
+        - Low
+    EmailResponse:
+      type: object
+      properties:
+        subject:
+          type: string
+      title: TicketRequestForm
