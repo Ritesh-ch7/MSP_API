@@ -17,7 +17,7 @@ async def regenerate_mail(request:Request,user_id, db, trace_id):
         subject = request_data.get('subject',None)
         llm_id = request_data.get('llm_id',None)
 
-        update_task_feedback(llm_id, db, trace_id)
+        await update_task_feedback(llm_id, db, trace_id)
 
         task_id = await add_task(llm_id,[], user_id, db, trace_id)
 

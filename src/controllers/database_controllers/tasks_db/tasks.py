@@ -10,7 +10,7 @@ import json
 from sqlalchemy.orm import Session
 from src.utils.constants import *
 
-def add_task(llm_id, reference_list, user_id, db, trace_id : str = None):
+async def add_task(llm_id, reference_list, user_id, db, trace_id : str = None):
     if(not trace_id):
         trace_id = str(uuid.uudi4())
     

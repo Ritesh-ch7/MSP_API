@@ -25,8 +25,8 @@ async def user_data(user_id, request : Request, db :Session = Depends(get_db), t
     
     try:
         response = await validate_input_data(request, trace_id)
-        llm_id = add_to_llmjob_table(response['validated_item'], db, trace_id)
-        task_id = add_task(llm_id, response['reference_list'], user_id, db, trace_id)
+        llm_id = await add_to_llmjob_table(response['validated_item'], db, trace_id)
+        task_id = await add_task(llm_id, response['reference_list'], user_id, db, trace_id)
         
     except Exception as e:
         logger.error(f"{trace_id}: {e}")
@@ -34,7 +34,7 @@ async def user_data(user_id, request : Request, db :Session = Depends(get_db), t
         return JSONResponse(content={"message": error_msg}, status_code = INTERNAL_SERVER_ERROR)
     
     try:
-        update_task_status(task_id, db, 'Inprogress', trace_id)
+        await update_task_status(task_id, db, 'Inprogress', trace_id)
         email_response = await generate_email(response,db,llm_id,task_id,trace_id)
         
         res = email_response.body.decode('utf-8')

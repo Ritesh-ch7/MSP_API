@@ -11,13 +11,17 @@ from datetime import datetime
 from src.utils.constants import *
 from sqlalchemy import func
 
-def update_task_status(task_id, db, task_status, trace_id):
+async def update_task_status(task_id, db, task_status, trace_id):
     if(not trace_id):
         trace_id = str(uuid.uuid4())
 
     try:
-       db.query(Task).filter(Task.Id == task_id).update({Task.Status : task_status, Task.UpdatedAt : func.now()})
-       db.commit()
+       task = db.query(Task).filter(Task.Id == task_id)
+       if task:
+            task.Status = task_status
+            task.UpdatedAt = func.now()
+            db.commit()
+       
 
     except Exception as e:
         logger.error(f'{trace_id} Could not update the status of the task with id {task_id}')

@@ -11,13 +11,16 @@ from datetime import datetime
 from src.utils.constants import *
 from sqlalchemy import func
 
-def update_task_feedback(llm_id, db, trace_id):
+async def update_task_feedback(llm_id, db, trace_id):
     if(not trace_id):
         trace_id = str(uuid.uuid4())
 
     try:
-       db.query(Task).filter(Task.LlmId == llm_id).order_by(Task.Id.desc()).first().update({Task.Feedback : 'Negative', Task.UpdatedAt : func.now()})
-       db.commit()
+        task = db.query(Task).filter(Task.LlmId == llm_id).order_by(Task.Id.desc()).first()
+        if task:
+            task.Feedback = 'Negative'
+            task.UpdatedAt = func.now()
+            db.commit()
 
     except Exception as e:
         logger.error(f'{trace_id} Could not update the feedback of the task with id {llm_id}')
