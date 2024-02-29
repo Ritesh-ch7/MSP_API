@@ -3,7 +3,7 @@ from src.config.logger_config import new_logger as logger
 from src.schemas.users import *
 from fastapi import HTTPException, Depends
 from src.utils.snake_case_to_pascal import snake_to_pascal
-from config.database import session_local, engine
+from src.config.database import session_local, engine
 # from src import models
 from src.models.llm_model import LLM
 from sqlalchemy.orm import Session

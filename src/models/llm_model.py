@@ -1,6 +1,6 @@
 from sqlalchemy import Column, Integer, Enum, String, DateTime, Text
 # from sqlalchemy.dialects.mysql import Text,LONGTEXT
-from config.database import base
+from src.config.database import base
 import enum
 from datetime import datetime
 
