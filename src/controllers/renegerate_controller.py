@@ -19,7 +19,7 @@ async def regenerate_mail(request:Request,user_id, db, trace_id):
         llm_id = request_data.get('llm_id',None)
 
         task_id = add_task(llm_id,[], user_id, db, trace_id)
-        # await update_task_feedback(llm_id, db, 'Negative', trace_id)
+        await update_task_feedback(llm_id, db, 'Negative', trace_id)
 
         
         if body and llm_id and subject:
