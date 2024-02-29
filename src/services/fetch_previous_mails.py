@@ -11,14 +11,14 @@ from datetime import datetime
 from src.utils.constants import *
 from sqlalchemy import func
 
-def update_task_feedback(llm_id, db, trace_id):
+async def fetch_previous_mails(llm_id, db, trace_id):
     if(not trace_id):
         trace_id = str(uuid.uuid4())
 
     try:
-       db.query(Task).filter(Task.LlmId == llm_id).order_by(Task.Id.desc()).first().update({Task.Feedback : 'Negative', Task.UpdatedAt : func.now()})
-       db.commit()
+       previous_mails = list(db.query(Task.Response['body']).filter(Task.LlmId == llm_id).all())
+       return previous_mails
 
     except Exception as e:
-        logger.error(f'{trace_id} Could not update the feedback of the task with id {llm_id}')
-        raise HTTPException(status_code = INTERNAL_SERVER_ERROR, detail = f'Cannot update the feedback of the task, {e}')
+        logger.error(f'{trace_id} Could not fetch previous emails of  llm_id {llm_id}')
+        raise HTTPException(status_code = INTERNAL_SERVER_ERROR, detail = f'Could not fetch previous emails of  llm_id {llm_id} {e}')

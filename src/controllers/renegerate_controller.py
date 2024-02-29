@@ -5,6 +5,7 @@ from fastapi.responses import JSONResponse
 from src.controllers.database_controllers.tasks_db.update_response import update_task_response
 from src.controllers.database_controllers.tasks_db.update_task_feedback import update_task_feedback
 from src.controllers.database_controllers.tasks_db.tasks import add_task
+from src.services.fetch_previous_mails import fetch_previous_mails
 import uuid, json
 
 async def regenerate_mail(request:Request,user_id, db, trace_id):
@@ -16,11 +17,14 @@ async def regenerate_mail(request:Request,user_id, db, trace_id):
         subject = request_data.get('subject',None)
         llm_id = request_data.get('llm_id',None)
 
-        task_id = add_task(llm_id,[], user_id, db, trace_id)
-        await update_task_feedback(llm_id, db, 'Negative', trace_id)
+        update_task_feedback(llm_id, db, trace_id)
+
+        task_id = await add_task(llm_id,[], user_id, db, trace_id)
 
         if body and llm_id and subject:
-            regenerated_mail_body = regenerate_mail_template(body,llm_id)
+
+            previous_mails = fetch_previous_mails(llm_id, db, trace_id)
+            regenerated_mail_body = regenerate_mail_template(previous_mails,llm_id)
             
             mail_json_text = json.dumps({'subject':subject, 'body' : regenerated_mail_body})
             mail_json_form = json.loads(mail_json_text)
