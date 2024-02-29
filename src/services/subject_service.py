@@ -2,7 +2,7 @@ from langchain.chat_models import ChatOpenAI
 from langchain.llms import OpenAI
 from langchain.prompts.chat import ChatPromptTemplate
 from langchain import PromptTemplate
-from utils.constants import *
+from src.utils.constants import *
 from fastapi import HTTPException
 from dotenv import load_dotenv
 import os, uuid
@@ -13,9 +13,8 @@ api_key = os.getenv("API_KEY")
  
 llm1 = ChatOpenAI(openai_api_key=api_key, temperature=0.3)
  
- #hello world
  
-def no_shot_body_template(ticket_id,requestor_name,description,priority,severity,trace_id:str = None):
+def subject_generator(ticket_id,requestor_name,description,priority,severity,trace_id:str = None):
     if trace_id == None:
         trace_id = str(uuid.uuid4())
     try:
@@ -29,6 +28,7 @@ def no_shot_body_template(ticket_id,requestor_name,description,priority,severity
         res =  llm1.invoke(query)
 
         logger.debug(f'{trace_id} email subject has been generated')
+        
         return res.content
     
     except Exception as e:

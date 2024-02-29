@@ -7,6 +7,7 @@ from src.utils.constants import *
 from src.config.logger_config import new_logger as logger
 from src.services.add_missing_fields import add_missing_fields
 
+
 async def validate_input_data(request: Request,trace_id:str = None):
     if trace_id == None:
         trace_id = str(uuid.uuid4())

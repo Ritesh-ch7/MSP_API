@@ -49,7 +49,7 @@ async def user_data(user_id, request : Request, db :Session = Depends(get_db), t
     try:
         update_task_status(task_id, db, 'Inprogress', trace_id)
         email_response = await generate_email(response,llm_id,trace_id)
-        print(email_response)
+        
         res = email_response.body.decode('utf-8')
 
         res_with_newline=res.replace("\\n","\n")
@@ -77,7 +77,7 @@ async def regenerate(request : Request, db :Session = Depends(get_db), trace_id:
         llm_id = request_data.get('llm_id',None)
         if body and llm_id:
             regenerated_mail = regenerate_mail_template(body)
-            return JSONResponse(content={"message":regenerated_mail},status_code = OK)
+            return regenerated_mail
         else:
             error_msg = f"body or llm_id is missing in request body"
             return JSONResponse(content={"message":error_msg},status_code = UNPROCESSABLE_ENTITY)
