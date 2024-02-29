@@ -58,7 +58,14 @@ async def regenerate(request : Request, db :Session = Depends(get_db), trace_id:
         trace_id = str(uuid.uuid4())
     try:
         regenerated_mail = await regenerate_mail(request,trace_id)
-        return regenerated_mail
+
+        res = regenerated_mail.body.decode('utf-8')
+        res_with_newline=res.replace("\\n","\n")\
+        
+        email_with_newline = Response(content=res_with_newline, media_type="text/plain")
+
+        return email_with_newline
+    
     except Exception as e:
         error_msg = f"Error in regenerate : main : {e}"
         return JSONResponse(content={"message":error_msg},status_code = INTERNAL_SERVER_ERROR)
