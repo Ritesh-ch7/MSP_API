@@ -35,12 +35,12 @@ async def user_data(user_id, request : Request, db :Session = Depends(get_db), t
     
     try:
         update_task_status(task_id, db, 'Inprogress', trace_id)
-        email_response = await generate_email(response,llm_id,trace_id)
+        email_response = await generate_email(response,db,llm_id,task_id,trace_id)
         
         res = email_response.body.decode('utf-8')
         res_with_newline=res.replace("\\n","\n")
 
-        await update_task_response(task_id, res_with_newline,db,trace_id)
+        
         logger.info("Email generated successfully")
         email_with_newline = Response(content=res_with_newline, media_type="text/plain")
         return email_with_newline
@@ -53,11 +53,11 @@ async def user_data(user_id, request : Request, db :Session = Depends(get_db), t
 
 
 @router.post("/{user_id}/regenerate")
-async def regenerate(request : Request, db :Session = Depends(get_db), trace_id:str = None):
+async def regenerate(request : Request, user_id,  db :Session = Depends(get_db), trace_id:str = None):
     if(not trace_id):
         trace_id = str(uuid.uuid4())
     try:
-        regenerated_mail = await regenerate_mail(request,trace_id)
+        regenerated_mail = await regenerate_mail(request,user_id, db, trace_id)
 
         res = regenerated_mail.body.decode('utf-8')
         res_with_newline=res.replace("\\n","\n")\
