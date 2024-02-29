@@ -2,6 +2,7 @@ from langchain.chat_models import ChatOpenAI
 from langchain.llms import OpenAI
 from langchain.prompts.chat import ChatPromptTemplate
 from langchain import PromptTemplate
+from fastapi.responses import JSONResponse
 from src.utils.constants import *
 from fastapi import HTTPException
 from dotenv import load_dotenv
@@ -27,7 +28,7 @@ def regenerate_mail_template(prev_emails,trace_id:str = None):
         res =  llm1.invoke(query)
 
         logger.debug(f'{trace_id} email has been re-generated')
-        return res.content
+        return JSONResponse(content={"body":res.content},status_code = OK)
     
     except Exception as e:
         logger.error(f'{trace_id} email cant be generated {e}')

@@ -78,7 +78,7 @@ async def regenerate(request : Request, db :Session = Depends(get_db), trace_id:
         llm_id = request_data.get('llm_id',None)
         if body and llm_id:
             regenerated_mail = regenerate_mail_template(body)
-            return JSONResponse(content={"message":regenerated_mail},status_code = OK)
+            return regenerated_mail
         else:
             error_msg = f"body or llm_id is missing in request body"
             return JSONResponse(content={"message":error_msg},status_code = UNPROCESSABLE_ENTITY)
