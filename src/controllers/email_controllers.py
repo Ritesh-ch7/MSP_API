@@ -16,19 +16,26 @@ async def generate_email(response: any,llm_id, trace_id : str = None):
 
         if(len(reference)==0):
             # no shot
-            mail_subject = subject_generator(validated_item.ticket_id,validated_item.requestor_name,validated_item.description,validated_item.priority,validated_item.severity)
+            mail_subject = subject_generator(validated_item.ticket_id,validated_item.requestor_name,validated_item.description,validated_item.priority,validated_item.severity,trace_id)
+
             mail_body =  no_shot_body_template(validated_item.ticket_id,validated_item.requestor_name,validated_item.description,validated_item.priority,validated_item.severity,trace_id)
+
             logger.info(f"{trace_id}: Response sent sucessfully")
             return JSONResponse(content={
+                "subject":mail_subject,
                 "body": mail_body,
                 "llm_id": llm_id
             }, status_code = OK)
 
         else: #Fewshot
-            generated_mail =  few_shot_body_template(validated_item.ticket_id, validated_item.requestor_name, validated_item.priority, validated_item.severity, validated_item.description, reference, trace_id)
+            mail_subject = subject_generator(validated_item.ticket_id,validated_item.requestor_name,validated_item.description,validated_item.priority,validated_item.severity,trace_id)
+
+            mail_body =  few_shot_body_template(validated_item.ticket_id, validated_item.requestor_name, validated_item.priority, validated_item.severity, validated_item.description, reference, trace_id)
+            
             logger.info(f"{trace_id}: Response sent sucessfully")
             return JSONResponse(content={
-                "body": generated_mail,
+                "subject":mail_subject,
+                "body": mail_body,
                 "llm_id": llm_id
             }, status_code = OK)
 

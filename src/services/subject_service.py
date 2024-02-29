@@ -13,7 +13,6 @@ api_key = os.getenv("API_KEY")
  
 llm1 = ChatOpenAI(openai_api_key=api_key, temperature=0.3)
  
- #hello world
  
 def subject_generator(ticket_id,requestor_name,description,priority,severity,trace_id:str = None):
     if trace_id == None:
@@ -29,6 +28,7 @@ def subject_generator(ticket_id,requestor_name,description,priority,severity,tra
         res =  llm1.invoke(query)
 
         logger.debug(f'{trace_id} email subject has been generated')
+        
         return res.content
     
     except Exception as e:
