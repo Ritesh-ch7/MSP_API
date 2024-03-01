@@ -13,23 +13,23 @@ load_dotenv()
 api_key = os.getenv("API_KEY")
  
 llm1 = ChatOpenAI(openai_api_key=api_key, temperature=0.3)
-
+ 
 def regenerate_mail_template(prev_emails,trace_id:str = None):
     if trace_id == None:
         trace_id = str(uuid.uuid4())
     try:
-
+ 
         regenerate_template=PromptTemplate(
             input_variables=["prev_emails"],
             template=REGENERATE_PROMPT
         )
-
+ 
         query = regenerate_template.format(prev_emails=prev_emails)
         res =  llm1.invoke(query)
-        logger.debug(f'{trace_id} email has been re-generated')
-        return res.content
         
-    
+        return res.content
+       
+   
     except Exception as e:
         logger.error(f'{trace_id} email cant be generated {e}')
         raise HTTPException(status_code=INTERNAL_SERVER_ERROR, detail=f"Internal Server Error: {str(e)}")

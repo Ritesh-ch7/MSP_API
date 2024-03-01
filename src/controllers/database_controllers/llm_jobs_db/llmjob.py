@@ -4,7 +4,6 @@ from src.schemas.users import *
 from fastapi import HTTPException, Depends
 from src.utils.snake_case_to_pascal import snake_to_pascal
 from src.config.database import session_local, engine
-# from src import models
 from src.models.llm_model import LLM
 from sqlalchemy.orm import Session
 from src.utils.constants import *
@@ -15,7 +14,6 @@ def add_to_llmjob_table(ticket : Ticket, db:Session, trace_id : str = None):
         trace_id = str(uuid.uuid4())
 
     try: 
-        # ticket = ticket['validated_item']
         llm_job_record = {
             snake_to_pascal('ticket_type'): ticket.ticket_type.value,
             snake_to_pascal('service'): ticket.service.value,
@@ -36,4 +34,4 @@ def add_to_llmjob_table(ticket : Ticket, db:Session, trace_id : str = None):
     
     except Exception as e:
         logger.error(f'{trace_id} Could not add ticket deatils of ticket id {ticket.ticket_id} to the database')
-        raise HTTPException(status_code = INTERNAL_SERVER_ERROR, detail = f'Cannot add the record to the database, {e}')
+        raise HTTPException(status_code = INTERNAL_SERVER_ERROR, detail = f'Could not add ticket deatils of ticket id {ticket.ticket_id} to the database, {e}')

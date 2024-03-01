@@ -50,10 +50,6 @@ async def validate_input_data(request: Request,trace_id:str = None):
             raise HTTPException(status_code=UNPROCESSABLE_ENTITY, message="Invalid data type in the ticket_id: expected int")
         
         validate_reference_list(reference_list)
-
-        for i in range(0,len(reference_list)):
-            reference_list[i] = add_missing_fields(reference_list[i])
-        print(reference_list)
          
         validated_item = Ticket(**item_dict)
         logger.debug(f"{trace_id}: Input is validated")
