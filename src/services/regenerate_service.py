@@ -26,7 +26,7 @@ def regenerate_mail_template(prev_emails,trace_id:str = None):
  
         query = regenerate_template.format(prev_emails=prev_emails)
         res =  llm1.invoke(query)
-        logger.debug(f'{trace_id} email has been re-generated')
+        
         return res.content
        
    

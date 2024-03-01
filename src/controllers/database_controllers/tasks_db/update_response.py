@@ -19,8 +19,8 @@ async def update_task_response(task_id, generated_response, db, user_id, trace_i
        
         task = db.query(Task).filter(Task.Id == task_id).update({Task.Response : generated_response, Task.UpdatedAt : func.now(), Task.UpdatedBy : user_id})
         db.commit()
+        logger.debug(f'{trace_id} response for task with task id {task_id} is added to database')
         update_task_status(task_id, db, 'Completed', user_id, trace_id)
-        logger.debug(f'{trace_id} response for task with task id {task_id} is updated')
         
 
     except Exception as e:

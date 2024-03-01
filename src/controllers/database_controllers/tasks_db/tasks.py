@@ -20,7 +20,6 @@ def add_task(llm_id, reference_list, user_id, db, trace_id : str = None):
             snake_to_pascal('reference'): json.dumps(reference_list),
             snake_to_pascal('status'): 'Pending',
             snake_to_pascal('created_by'): user_id
-            # snake_to_pascal('feedback') : 'Posiive'
         }
 
         task_record = Task(**task_record)
@@ -31,5 +30,5 @@ def add_task(llm_id, reference_list, user_id, db, trace_id : str = None):
         return task_record.Id
 
     except Exception as e:
-        logger.error(f'{trace_id} Could not create task for check here ')
-        raise HTTPException(status_code = INTERNAL_SERVER_ERROR, detail = f'Cannot add the record to the database, {e}')
+        logger.error(f'{trace_id} Could not create task for given llm_id {llm_id}')
+        raise HTTPException(status_code = INTERNAL_SERVER_ERROR, detail = f'Could not create task for given llm_id {llm_id}, {e}')

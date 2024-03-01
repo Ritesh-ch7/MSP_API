@@ -26,7 +26,7 @@ async def generate_email(response: any,db,llm_id, task_id, user_id, trace_id : s
             mail_json_form = json.loads(mail_json_text)
             await update_task_response(task_id, mail_json_form,db,user_id,trace_id)
 
-            logger.info(f"{trace_id}: Response sent sucessfully")
+            logger.debug(f"{trace_id}: Email has been generated successfully for the task {task_id}")
             return JSONResponse(content={
                 "subject":mail_subject,
                 "body": mail_body,
@@ -42,7 +42,7 @@ async def generate_email(response: any,db,llm_id, task_id, user_id, trace_id : s
             mail_json_form = json.loads(mail_json_text)
             await update_task_response(task_id, mail_json_form,db,user_id,trace_id)
 
-            logger.info(f"{trace_id}: Response sent sucessfully")
+            logger.debug(f"{trace_id}: Email has been generated successfully for the task {task_id}")
             return JSONResponse(content={
                 "subject":mail_subject,
                 "body": mail_body,

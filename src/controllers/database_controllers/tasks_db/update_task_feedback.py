@@ -17,10 +17,12 @@ async def update_task_feedback(llm_id, db, task_feedback, user_id, trace_id):
 
     try:
        task = db.query(Task).filter(Task.LlmId == llm_id).order_by(Task.Id.desc()).first()
-       task.Feedback = 'Negative' 
+       task.Feedback = task_feedback 
        task.UpdatedAt = func.now()
        task.UpdatedBy = user_id
        db.commit()
+
+       logger.debug(f'{trace_id} Feedback for the task with llm_id {llm_id} has been updated to {task_feedback}')
 
 
     except Exception as e:

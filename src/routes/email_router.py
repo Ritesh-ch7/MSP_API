@@ -31,7 +31,7 @@ async def user_data(user_id, request : Request, db :Session = Depends(get_db), t
     except Exception as e:
         logger.error(f"{trace_id}: {e}")
         error_msg = f"Error in user_data function: {str(e)}"
-        return JSONResponse(content={"message": error_msg}, status_code = INTERNAL_SERVER_ERROR)
+        return JSONResponse(content={"message": error_msg}, status_code = UNPROCESSABLE_ENTITY)
     
     try:
         update_task_status(task_id, db, 'Inprogress',user_id, trace_id)
@@ -65,6 +65,8 @@ async def regenerate(request : Request, user_id,  db :Session = Depends(get_db),
         res_with_newline=res.replace("\\n","\n")\
         
         email_with_newline = Response(content=res_with_newline, media_type="text/plain")
+
+        logger.info(f'{trace_id} regenerated email has been sent successfully !!')
 
         return email_with_newline
     
