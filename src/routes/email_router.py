@@ -9,7 +9,7 @@ from sqlalchemy.orm import Session
 from src.controllers.database_controllers.llm_jobs_db.llmjob import add_to_llmjob_table
 from src.controllers.database_controllers.tasks_db.tasks import add_task
 from src.controllers.database_controllers.tasks_db.update_status import update_task_status
-from src.controllers.database_controllers.tasks_db.update_response import update_task_response
+from src.controllers.database_controllers.tasks_db.update_failed_reason import update_failed_reason
 from src.utils.constants import *
 from src.config.get_db import get_db
 from src.controllers.renegerate_controller import regenerate_mail
@@ -34,9 +34,9 @@ async def user_data(user_id, request : Request, db :Session = Depends(get_db), t
         return JSONResponse(content={"message": error_msg}, status_code = INTERNAL_SERVER_ERROR)
     
     try:
-        update_task_status(task_id, db, 'Inprogress', trace_id)
-        email_response = await generate_email(response,db,llm_id,task_id,trace_id)
-        update_task_status(task_id, db, 'Completed', trace_id)
+        update_task_status(task_id, db, 'Inprogress',user_id, trace_id)
+        email_response = await generate_email(response,db,llm_id,task_id,user_id,trace_id)
+        update_task_status(task_id, db, 'Completed', user_id, trace_id)
         res = email_response.body.decode('utf-8')
         res_with_newline=res.replace("\\n","\n")
 
@@ -48,7 +48,8 @@ async def user_data(user_id, request : Request, db :Session = Depends(get_db), t
     except Exception as e:
         logger.error(f"{trace_id} : Task has been terminated {e}")
         error_msg = f"Error in updating the task: {str(e)}"
-        update_task_status(task_id, db, 'Failed', trace_id)
+        update_task_status(task_id, db, 'Failed', user_id, trace_id)
+        update_failed_reason(task_id,db,error_msg,trace_id)
         return JSONResponse(content={"message": error_msg}, status_code = INTERNAL_SERVER_ERROR)
 
 
@@ -69,6 +70,7 @@ async def regenerate(request : Request, user_id,  db :Session = Depends(get_db),
     
     except Exception as e:
         error_msg = f"Error in regenerate : main : {e}"
+        
         return JSONResponse(content={"message":error_msg},status_code = INTERNAL_SERVER_ERROR)
 
     

@@ -6,9 +6,10 @@ import uuid, json
 from src.config.logger_config import new_logger as logger
 from src.utils.constants import *
 from src.services.subject_service import subject_generator
+from src.controllers.database_controllers.tasks_db.update_failed_reason import update_failed_reason
 from src.controllers.database_controllers.tasks_db.update_response import update_task_response
 
-async def generate_email(response: any,db,llm_id, task_id, trace_id : str = None):
+async def generate_email(response: any,db,llm_id, task_id, user_id, trace_id : str = None):
     if(not trace_id):
         trace_id = str(uuid.uuid4())
     try:
@@ -23,7 +24,7 @@ async def generate_email(response: any,db,llm_id, task_id, trace_id : str = None
 
             mail_json_text = json.dumps({'subject':mail_subject, 'body' : mail_body})
             mail_json_form = json.loads(mail_json_text)
-            await update_task_response(task_id, mail_json_form,db,trace_id)
+            await update_task_response(task_id, mail_json_form,db,user_id,trace_id)
 
             logger.info(f"{trace_id}: Response sent sucessfully")
             return JSONResponse(content={
@@ -39,7 +40,7 @@ async def generate_email(response: any,db,llm_id, task_id, trace_id : str = None
             
             mail_json_text = json.dumps({'subject':mail_subject, 'body' : mail_body})
             mail_json_form = json.loads(mail_json_text)
-            await update_task_response(task_id, mail_json_form,db,trace_id)
+            await update_task_response(task_id, mail_json_form,db,user_id,trace_id)
 
             logger.info(f"{trace_id}: Response sent sucessfully")
             return JSONResponse(content={
@@ -50,7 +51,8 @@ async def generate_email(response: any,db,llm_id, task_id, trace_id : str = None
 
     except Exception as e:
         logger.error(f"{trace_id}: {e}")
-        error_msg = f"Error in user_data function: {str(e)}"
+        error_msg = f"Error in LLM model mail generation: {str(e)}"
+        update_failed_reason(task_id, db, error_msg, trace_id)
         return JSONResponse(content={"message": error_msg}, status_code = INTERNAL_SERVER_ERROR)
     
 

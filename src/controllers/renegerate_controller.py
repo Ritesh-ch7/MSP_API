@@ -8,6 +8,7 @@ from src.controllers.database_controllers.tasks_db.update_task_feedback import u
 from src.controllers.database_controllers.tasks_db.tasks import add_task
 from src.services.fetch_previous_mails import fetch_prev_mails
 from src.controllers.database_controllers.tasks_db.update_status import update_task_status
+from src.controllers.database_controllers.tasks_db.update_failed_reason import update_failed_reason
 import uuid, json
 
 async def regenerate_mail(request:Request,user_id, db, trace_id):
@@ -19,7 +20,7 @@ async def regenerate_mail(request:Request,user_id, db, trace_id):
         subject = request_data.get('subject',None)
         llm_id = request_data.get('llm_id',None)
 
-        await update_task_feedback(llm_id, db, 'Negative', trace_id)
+        await update_task_feedback(llm_id, db, 'Negative', user_id, trace_id)
         task_id = add_task(llm_id,[], user_id, db, trace_id)
 
         
@@ -30,8 +31,8 @@ async def regenerate_mail(request:Request,user_id, db, trace_id):
             
             mail_json_text = json.dumps({'subject':subject, 'body' : regenerated_mail_body})
             mail_json_form = json.loads(mail_json_text)
-            await update_task_response(task_id, mail_json_form,db,trace_id)
-            update_task_status(task_id, db, 'Completed', trace_id)
+            await update_task_response(task_id, mail_json_form,db,user_id,trace_id)
+            update_task_status(task_id, db, 'Completed', user_id, trace_id)
 
 
             
@@ -46,6 +47,7 @@ async def regenerate_mail(request:Request,user_id, db, trace_id):
 
     except Exception as e:
         error_msg = f"Error in regenerate_mail : {e}"
+        update_failed_reason(task_id, db, error_msg, trace_id)
         return JSONResponse(content={"message":error_msg},status_code = INTERNAL_SERVER_ERROR)
     
     

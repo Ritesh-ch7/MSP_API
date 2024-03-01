@@ -11,12 +11,12 @@ from datetime import datetime
 from src.utils.constants import *
 from sqlalchemy import func
 
-def update_task_status(task_id, db, task_status, trace_id):
+def update_task_status(task_id, db, task_status,user_id, trace_id):
     if(not trace_id):
         trace_id = str(uuid.uuid4())
 
     try:
-        db.query(Task).filter(Task.Id == task_id).update({Task.Status : task_status, Task.UpdatedAt : func.now()})
+        db.query(Task).filter(Task.Id == task_id).update({Task.Status : task_status, Task.UpdatedAt : func.now(), Task.UpdatedBy : user_id})
         # if task:
         #     task.Status = task_status
         #     task.UpdatedAt = func.now()

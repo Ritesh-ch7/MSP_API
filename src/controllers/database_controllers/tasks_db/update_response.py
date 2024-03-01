@@ -11,15 +11,15 @@ from src.controllers.database_controllers.tasks_db.update_status import update_t
 from src.utils.constants import *
 from sqlalchemy import func
 
-async def update_task_response(task_id, generated_response, db,  trace_id):
+async def update_task_response(task_id, generated_response, db, user_id, trace_id):
     if(not trace_id):
         trace_id = str(uuid.uuid4())
 
     try:
        
-        db.query(Task).filter(Task.Id == task_id).update({Task.Response : generated_response, Task.UpdatedAt : func.now()})
+        task = db.query(Task).filter(Task.Id == task_id).update({Task.Response : generated_response, Task.UpdatedAt : func.now(), Task.UpdatedBy : user_id})
         db.commit()
-        update_task_status(task_id, db, 'Completed', trace_id)
+        update_task_status(task_id, db, 'Completed', user_id, trace_id)
         logger.debug(f'{trace_id} response for task with task id {task_id} is updated')
         
 
