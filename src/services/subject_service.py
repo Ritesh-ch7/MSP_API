@@ -15,6 +15,24 @@ llm1 = ChatOpenAI(openai_api_key=api_key, temperature=0.3)
  
  
 def subject_generator(ticket_id,requestor_name,description,priority,severity,trace_id:str = None):
+    """
+    Generates an email subject using a template based on the provided input variables.
+
+    Args:
+    - ticket_id: The ID of the ticket associated with the email subject.
+    - requestor_name: The name of the requester associated with the ticket.
+    - description: The description of the ticket.
+    - priority: The priority of the ticket.
+    - severity: The severity of the ticket.
+    - trace_id: A unique identifier for tracing purposes. If not provided, a new UUID will be generated.
+
+    Returns:
+    The generated email subject.
+
+    Raises:
+    HTTPException: If an error occurs during the email subject generation, 
+                   an HTTPException with status code 500 (Internal Server Error) is raised.
+    """
     if trace_id == None:
         trace_id = str(uuid.uuid4())
     try:

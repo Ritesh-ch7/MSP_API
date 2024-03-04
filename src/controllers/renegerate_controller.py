@@ -13,6 +13,22 @@ import uuid, json
 from src.config.logger_config import new_logger as logger
 
 async def regenerate_mail(request:Request,user_id, db, trace_id):
+    """
+    Regenerates an email based on the provided email body, subject, and language model ID.
+
+    Args:
+    - request: The FastAPI Request object containing the JSON body with 'body', 'subject', and 'llm_id'.
+    - user_id: The ID of the user regenerating the email.
+    - db: The database session to perform the database operations.
+    - trace_id: A unique identifier for tracing purposes. If not provided, a new UUID will be generated.
+
+    Returns:
+    A JSON response containing the regenerated email subject, body, and associated IDs.
+
+    Raises:
+    HTTPException: If an error occurs during the email regeneration or database operation, 
+                   an HTTPException with status code 500 (Internal Server Error) is raised.
+    """
     if(not trace_id):
         trace_id = str(uuid.uuid4())
     try:

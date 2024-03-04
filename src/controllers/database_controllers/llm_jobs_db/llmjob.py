@@ -10,6 +10,21 @@ from src.utils.constants import *
 
 
 def add_to_llmjob_table(ticket : Ticket, db:Session, trace_id : str = None):
+    """
+    Adds ticket details to the Large Language Model (LLM) job table in the database.
+
+    Args:
+    - ticket: The Ticket object containing details to be added to the LLM job table.
+    - db: The database session to perform the database operations.
+    - trace_id: A unique identifier for tracing purposes. If not provided, a new UUID will be generated.
+
+    Returns:
+    The ID of the newly created LLM job record.
+
+    Raises:
+    HTTPException: If an error occurs during the database operation, 
+                   an HTTPException with status code 500 (Internal Server Error) is raised.
+    """
     if(trace_id == None):
         trace_id = str(uuid.uuid4())
 
