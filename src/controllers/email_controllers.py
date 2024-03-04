@@ -10,6 +10,24 @@ from src.controllers.database_controllers.tasks_db.update_failed_reason import u
 from src.controllers.database_controllers.tasks_db.update_response import update_task_response
 
 async def generate_email(response: any,db,llm_id, task_id, user_id, trace_id : str = None):
+    """
+    Generates an email based on the response from a language model for a given task.
+
+    Args:
+    - response: The response from the language model.
+    - db: The database session to perform the database operations.
+    - llm_id: The ID associated with the language model.
+    - task_id: The ID of the task for which the email is generated.
+    - user_id: The ID of the user generating the email.
+    - trace_id: A unique identifier for tracing purposes. If not provided, a new UUID will be generated.
+
+    Returns:
+    A JSON response containing the generated email subject, body, and associated IDs.
+
+    Raises:
+    HTTPException: If an error occurs during the email generation or database operation, 
+                   an HTTPException with status code 500 (Internal Server Error) is raised.
+    """
     if(not trace_id):
         trace_id = str(uuid.uuid4())
     try:

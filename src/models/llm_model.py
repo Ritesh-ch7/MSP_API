@@ -13,7 +13,7 @@ class LLM(base):
     Severity = Column(Integer)
     Priority = Column(Enum('Low','Medium','High'), default='Low')
     TicketType = Column(Enum('Incident','Service'))
-    Service = Column(Enum('Phonecall', 'Mail'))
+    Service = Column(Enum('Phonecall', 'Email'))
     Description = Column(String(100))
  
 

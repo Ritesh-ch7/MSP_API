@@ -12,6 +12,20 @@ from src.utils.constants import *
 from sqlalchemy import func
 
 async def update_task_response(task_id, generated_response, db, user_id, trace_id):
+    """
+    Updates the response for a task with the specified task ID in the database.
+
+    Args:
+    - task_id: The ID of the task to be updated.
+    - generated_response: The response to be updated for the task.
+    - db: The database session to perform the database operations.
+    - user_id: The ID of the user updating the task response.
+    - trace_id: A unique identifier for tracing purposes. If not provided, a new UUID will be generated.
+
+    Raises:
+    HTTPException: If an error occurs during the database operation, 
+                   an HTTPException with status code 500 (Internal Server Error) is raised.
+    """
     if(not trace_id):
         trace_id = str(uuid.uuid4())
 

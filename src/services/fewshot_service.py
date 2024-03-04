@@ -13,6 +13,25 @@ api_key = os.getenv("API_KEY")
 llm1 = ChatOpenAI(openai_api_key=api_key, temperature=0.3)
  
 def few_shot_body_template(ticket_id, requester_name, priority, severity, text, user_examples, trace_id : str = None):
+    """
+    Generates an email body using a few-shot learning template based on the provided input variables and user examples.
+
+    Args:
+    - ticket_id: The ID of the ticket associated with the email.
+    - requester_name: The name of the requester associated with the ticket.
+    - priority: The priority of the ticket.
+    - severity: The severity of the ticket.
+    - text: The text content of the email.
+    - user_examples: A list of user-provided examples for few-shot learning.
+    - trace_id: A unique identifier for tracing purposes. If not provided, a new UUID will be generated.
+
+    Returns:
+    The generated email body.
+
+    Raises:
+    HTTPException: If an error occurs during the email generation, 
+                   an HTTPException with status code 500 (Internal Server Error) is raised.
+    """
     if (trace_id == None):
         trace_id = str(uuid.uuid4())
  
