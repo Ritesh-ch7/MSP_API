@@ -10,6 +10,20 @@ from src.utils.constants import *
 
 
 def create_llmjob(ticket : Ticket, db:Session, trace_id : str = None):
+    """
+    Creates a new LLM job record based on the provided ticket details and adds it to the database.
+
+    Parameters:
+    - ticket (Ticket): The Ticket object containing details for the new LLM job.
+    - db (Session): The database session object to interact with the database.
+    - trace_id (str, optional): Unique identifier for tracking the operation. If not provided, a new UUID is generated.
+
+    Returns:
+    int: The ID of the newly created LLM job.
+
+    Raises:
+    HTTPException: If there is an error adding the ticket details to the database.
+    """
     if(trace_id == None):
         trace_id = str(uuid.uuid4())
 

@@ -11,6 +11,19 @@ from src.utils.constants import *
 from sqlalchemy import func
 
 def update_task_status(task_id, db, task_status, trace_id):
+    """
+    Updates the status of a task with the specified task ID in the database.
+
+    Args:
+    - task_id: The ID of the task to be updated.
+    - db: The database session to perform the database operations.
+    - task_status: The new status to be set for the task.
+    - trace_id: A unique identifier for tracing purposes.
+
+    Raises:
+    HTTPException: If an error occurs during the database operation, 
+                   an HTTPException with status code 500 (Internal Server Error) is raised.
+    """
     if(not trace_id):
         trace_id = str(uuid.uuid4())
 

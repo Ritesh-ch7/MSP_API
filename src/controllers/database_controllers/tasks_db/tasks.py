@@ -10,6 +10,24 @@ from sqlalchemy.orm import Session
 from src.utils.constants import *
 
 def create_task(llm_id, reference_list, user_id, db, trace_id : str = None):
+    """
+    Adds a new task to the database with specified information.
+
+    Args:
+    - llm_id: The ID of the associated LLM job for the task.
+    - reference_list (list): A list of references associated with the task, to be stored as JSON.
+    - user_id: The ID of the user creating the task.
+    - db: The database session to perform the database operations.
+    - trace_id (str, optional): A unique identifier for tracing purposes. 
+      If not provided, a new UUID will be generated.
+
+    Returns:
+    int: The ID of the newly created task record in the database.
+
+    Raises:
+    HTTPException: If an error occurs during the database operation, 
+                   an HTTPException with status code 500 (Internal Server Error) is raised.
+    """
     if(not trace_id):
         trace_id = str(uuid.uudi4())
     

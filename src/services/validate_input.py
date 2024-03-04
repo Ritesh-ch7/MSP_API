@@ -8,6 +8,20 @@ from src.config.logger_config import new_logger as logger
 from src.services.add_missing_fields import add_missing_fields
 
 async def validate_input_data(request: Request,trace_id:str = None):
+    """
+    Validates input data from an HTTP request, ensuring it meets predefined criteria.
+
+    Args:
+    - request (Request): The incoming HTTP request containing user data.
+    - trace_id (str, optional): A unique identifier for tracing purposes.
+      If not provided, a new UUID will be generated.
+
+    Returns:
+    dict: A dictionary containing the validated ticket item and the validated reference list.
+
+    Raises:
+    HTTPException: If an error occurs during data validation, an HTTPException with the appropriate status code and message is raised.
+    """
     if trace_id == None:
         trace_id = str(uuid.uuid4())
     try:

@@ -15,6 +15,24 @@ llm1 = ChatOpenAI(openai_api_key=api_key, temperature=0.3)
  
  
 def no_shot_body_template(ticket_id,requestor_name,description,priority,severity,trace_id:str = None):
+    """
+    Generates an email body using a no-shot prompt template.
+
+    Args:
+    - ticket_id: The ID of the ticket.
+    - requestor_name: The name of the ticket requester.
+    - description: The description of the ticket.
+    - priority: The priority of the ticket.
+    - severity: The severity of the ticket.
+    - trace_id (str, optional): A unique identifier for tracing purposes.
+      If not provided, a new UUID will be generated.
+
+    Returns:
+    str: The generated email body based on the no-shot prompt template.
+
+    Raises:
+    HTTPException: If an error occurs during email generation, an HTTPException with status code 500 (Internal Server Error) is raised.
+    """
     if trace_id == None:
         trace_id = str(uuid.uuid4())
     try:

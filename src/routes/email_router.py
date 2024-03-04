@@ -26,6 +26,24 @@ router = APIRouter()
 
 @router.post("/{user_id}/email")
 async def user_data(user_id, request : Request, db :Session = Depends(get_db), trace_id : str = None):
+    """
+    Processes user data, validates input, adds to LLM job table, adds a task, updates task status, generates an email, and updates task response.
+
+    Args:
+    - user_id: The ID of the user submitting the data.
+    - request (Request): The incoming HTTP request containing user data.
+    - db (Session, optional): The database session to perform database operations. 
+      Defaults to the dependency `get_db`.
+    - trace_id (str, optional): A unique identifier for tracing purposes. 
+      If not provided, a new UUID will be generated.
+
+    Returns:
+    JSONResponse: A JSON response containing the generated email body and associated LLM ID.
+                  If successful, returns a status code of 200 (OK); otherwise, returns 500 (Internal Server Error).
+
+    Raises:
+    Exception: If an error occurs during the processing of user data, it is logged, and a 500 (Internal Server Error) response is returned.
+    """
     if(not trace_id):
         trace_id = str(uuid.uuid4())
     
