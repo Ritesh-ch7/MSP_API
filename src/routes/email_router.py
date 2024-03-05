@@ -13,6 +13,8 @@ from src.controllers.database_controllers.tasks_db.update_failed_reason import u
 from src.utils.constants import *
 from src.config.get_db import get_db
 from src.controllers.renegerate_controller import regenerate_mail
+from fastapi import HTTPException
+from src.models.tickets import TicketBase
 
 router = APIRouter()
 
@@ -34,16 +36,16 @@ async def user_data(user_id, request : Request, db :Session = Depends(get_db), t
         return JSONResponse(content={"message": error_msg}, status_code = UNPROCESSABLE_ENTITY)
     
     try:
-        update_task_status(task_id, db, 'Inprogress',user_id, trace_id)
+        await update_task_status(task_id, db, 'Inprogress',user_id, trace_id)
         email_response = await generate_email(response,db,llm_id,task_id,user_id,trace_id)
-        update_task_status(task_id, db, 'Completed', user_id, trace_id)
+        await update_task_status(task_id, db, 'Completed', user_id, trace_id)
         res = email_response.body.decode('utf-8')
-        res_with_newline=res.replace("\\n","\n")
+        # res_with_newline=res.replace("\\n","\n")
 
         
         logger.info("Email generated successfully")
-        email_with_newline = Response(content=res_with_newline, media_type="text/plain")
-        return email_with_newline
+        # email_with_newline = Response(content=res_with_newline, media_type="text/plain")
+        return email_response
     
     except Exception as e:
         logger.error(f"{trace_id} : Task has been terminated {e}")
@@ -62,13 +64,13 @@ async def regenerate(request : Request, user_id,  db :Session = Depends(get_db),
         
 
         res = regenerated_mail.body.decode('utf-8')
-        res_with_newline=res.replace("\\n","\n")\
+        # res_with_newline=res.replace("\\n","\n")
         
-        email_with_newline = Response(content=res_with_newline, media_type="text/plain")
+        # email_with_newline = Response(content=res_with_newline, media_type="text/plain")
 
         logger.info(f'{trace_id} regenerated email has been sent successfully !!')
 
-        return email_with_newline
+        return regenerated_mail
     
     except Exception as e:
         error_msg = f"Error in regenerate : main : {e}"
@@ -76,3 +78,14 @@ async def regenerate(request : Request, user_id,  db :Session = Depends(get_db),
         return JSONResponse(content={"message":error_msg},status_code = INTERNAL_SERVER_ERROR)
 
     
+@router.get("/tickets")
+def fetch_all_records(db: Session = Depends(get_db)):
+    records = db.query(TicketBase).all()
+    return records
+ 
+@router.get("/tickets/{id}")
+def fetch_individual_record(id, db: Session = Depends(get_db)):
+    record = db.query(TicketBase).filter(TicketBase.ticket_id == id).first()
+    if record is None:
+        raise HTTPException(status_code=404, detail="Ticket not found")
+    return record

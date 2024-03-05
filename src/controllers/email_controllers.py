@@ -18,6 +18,7 @@ async def generate_email(response: any,db,llm_id, task_id, user_id, trace_id : s
 
         if(len(reference)==0):
             # no shot
+            print("no shot")
             mail_subject = subject_generator(validated_item.ticket_id,validated_item.requestor_name,validated_item.description,validated_item.priority,validated_item.severity,trace_id)
 
             mail_body =  no_shot_body_template(validated_item.ticket_id,validated_item.requestor_name,validated_item.description,validated_item.priority,validated_item.severity,trace_id)
@@ -34,10 +35,11 @@ async def generate_email(response: any,db,llm_id, task_id, user_id, trace_id : s
             }, status_code = OK)
 
         else: #Fewshot
+            print("entered few shot")
             mail_subject = subject_generator(validated_item.ticket_id,validated_item.requestor_name,validated_item.description,validated_item.priority,validated_item.severity,trace_id)
-
+            print("before few shot")
             mail_body =  few_shot_body_template(validated_item.ticket_id, validated_item.requestor_name, validated_item.priority, validated_item.severity, validated_item.description, reference, trace_id)
-            
+            print("after few shot")
             mail_json_text = json.dumps({'subject':mail_subject, 'body' : mail_body})
             mail_json_form = json.loads(mail_json_text)
             await update_task_response(task_id, mail_json_form,db,user_id,trace_id)
@@ -52,7 +54,7 @@ async def generate_email(response: any,db,llm_id, task_id, user_id, trace_id : s
     except Exception as e:
         logger.error(f"{trace_id}: {e}")
         error_msg = f"Error in LLM model mail generation: {str(e)}"
-        update_failed_reason(task_id, db, error_msg, trace_id)
+        await update_failed_reason(task_id, db, error_msg, trace_id)
         return JSONResponse(content={"message": error_msg}, status_code = INTERNAL_SERVER_ERROR)
     
 

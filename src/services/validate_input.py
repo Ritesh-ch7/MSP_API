@@ -12,6 +12,7 @@ async def validate_input_data(request: Request,trace_id:str = None):
     if trace_id == None:
         trace_id = str(uuid.uuid4())
     try:
+        
         data = await request.json()
         item_dict = jsonable_encoder(data)
         reference_list = data.get("reference", [])
@@ -53,6 +54,7 @@ async def validate_input_data(request: Request,trace_id:str = None):
          
         validated_item = Ticket(**item_dict)
         logger.debug(f"{trace_id}: Input is validated")
+        print("validating")
         return {"validated_item": validated_item, "reference_list": reference_list}
 
     except HTTPException as http_exception:

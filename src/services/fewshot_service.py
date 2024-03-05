@@ -17,6 +17,7 @@ def few_shot_body_template(ticket_id, requester_name, priority, severity, text, 
         trace_id = str(uuid.uuid4())
  
     try:
+        print("STAtRTEED")
         examples = user_examples
  
         example_prompt=PromptTemplate(
@@ -32,7 +33,7 @@ def few_shot_body_template(ticket_id, requester_name, priority, severity, text, 
         input_variables=["ticket_id","requester_name","text","priority","severity"]
         )
  
-        logger.debug(f'{trace_id} email for no shot has been generated')
+        logger.debug(f'{trace_id} email for few shot has been generated')
         query=few_shot_template.format(ticket_id=ticket_id, requester_name=requester_name, text=text, priority=priority, severity=severity, example=user_examples)
 
         return llm1.invoke(query).content
