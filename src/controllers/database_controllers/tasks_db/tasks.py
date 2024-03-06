@@ -31,4 +31,4 @@ def add_task(llm_id, reference_list, user_id, db, trace_id : str = None):
 
     except Exception as e:
         logger.error(f'{trace_id} Could not create task for given llm_id {llm_id}')
-        raise HTTPException(status_code = INTERNAL_SERVER_ERROR, detail = f'Could not create task for given llm_id {llm_id}, {e}')
+        raise HTTPException(status_code = INTERNAL_SERVER_ERROR, detail = f'Error in DB : Could not create task for given llm_id {llm_id}, {e}')

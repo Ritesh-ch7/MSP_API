@@ -16,7 +16,8 @@ async def update_failed_reason(task_id, db, error_msg, trace_id):
         trace_id = str(uuid.uuid4())
 
     try:
-       db.query(Task).filter(Task.Id == task_id).update({Task.FailedReason : error_msg})
+       task = db.query(Task).filter(Task.Id == task_id)
+       task.FailedReason = error_msg
        db.commit()
 
 

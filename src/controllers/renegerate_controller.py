@@ -16,6 +16,7 @@ async def regenerate_mail(request:Request,user_id, db, trace_id):
     if(not trace_id):
         trace_id = str(uuid.uuid4())
     try:
+        task_id = ''
         request_data = await request.json()
         body = request_data.get('body',None)
         subject = request_data.get('subject',None)
@@ -57,7 +58,7 @@ async def regenerate_mail(request:Request,user_id, db, trace_id):
 
     except Exception as e:
         error_msg = f"Error in regenerate_mail : {e}"
-        update_failed_reason(task_id, db, error_msg, trace_id)
+        await update_failed_reason(task_id, db, error_msg, trace_id)
         logger.error(f'{trace_id} Error in mail regeneration : {e}')
         return JSONResponse(content={"message":error_msg},status_code = INTERNAL_SERVER_ERROR)
     

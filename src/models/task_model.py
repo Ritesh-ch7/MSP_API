@@ -8,7 +8,7 @@ class Task(base):
  
     Id = Column(Integer,primary_key=True,autoincrement=True)
     LlmId = Column(Integer)
-    Feedback = Column(Enum('Positive'),default='Positive')
+    Feedback = Column(Enum('Positive','Negative'),default='Positive')
     FailedReason = Column(String(100))
     Response = Column(JSON)
     Reference = Column(Text)

@@ -32,6 +32,6 @@ def subject_generator(ticket_id,requestor_name,description,priority,severity,tra
         return res.content
     
     except Exception as e:
-        logger.error(f'{trace_id} email subject cant be generated {e}')
+        logger.error(f'{trace_id} email subject cant be generated for{e}')
         raise HTTPException(status_code=INTERNAL_SERVER_ERROR, detail=f"Internal Server Error: {str(e)}")
     
