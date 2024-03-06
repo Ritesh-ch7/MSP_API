@@ -14,6 +14,15 @@ def add_to_llmjob_table(ticket : Ticket, db:Session, trace_id : str = None):
         trace_id = str(uuid.uuid4())
 
     try: 
+        llm_job = db.query(LLM).filter(LLM.TicketId == ticket.ticket_id).first()
+        if llm_job:
+            raise Exception
+        
+    except Exception as e:
+        raise HTTPException(status_code = BAD_REQUEST, detail = f'ticket with id {ticket.ticket_id} is already present in the database')
+    
+    try:
+        
         llm_job_record = {
             snake_to_pascal('ticket_type'): ticket.ticket_type.value,
             snake_to_pascal('service'): ticket.service.value,
@@ -34,4 +43,4 @@ def add_to_llmjob_table(ticket : Ticket, db:Session, trace_id : str = None):
     
     except Exception as e:
         logger.error(f'{trace_id} Could not add ticket deatils of ticket id {ticket.ticket_id} to the database')
-        raise HTTPException(status_code = INTERNAL_SERVER_ERROR, detail = f'Could not add ticket deatils of ticket id {ticket.ticket_id} to the database, {e}')
+        raise HTTPException(status_code = INTERNAL_SERVER_ERROR, detail = f'Error in DB : Could not add ticket deatils of ticket id {ticket.ticket_id} to the database, {e}')

@@ -8,6 +8,12 @@ from src.utils.constants import *
 from src.services.subject_service import subject_generator
 from src.controllers.database_controllers.tasks_db.update_failed_reason import update_failed_reason
 from src.controllers.database_controllers.tasks_db.update_response import update_task_response
+from fastapi import HTTPException
+from dotenv import load_dotenv
+import os
+from src.services.apikey_validation import check_openai_api_key
+
+
 
 async def generate_email(response: any,db,llm_id, task_id, user_id, trace_id : str = None):
     if(not trace_id):
@@ -16,11 +22,11 @@ async def generate_email(response: any,db,llm_id, task_id, user_id, trace_id : s
         validated_item =  response["validated_item"]
         reference =  response["reference_list"]
 
+        api_key = os.getenv('API_KEY')
         if(len(reference)==0):
             # no shot
-            print("no shot")
             mail_subject = subject_generator(validated_item.ticket_id,validated_item.requestor_name,validated_item.description,validated_item.priority,validated_item.severity,trace_id)
-
+            
             mail_body =  no_shot_body_template(validated_item.ticket_id,validated_item.requestor_name,validated_item.description,validated_item.priority,validated_item.severity,trace_id)
 
             mail_json_text = json.dumps({'subject':mail_subject, 'body' : mail_body})
@@ -55,6 +61,7 @@ async def generate_email(response: any,db,llm_id, task_id, user_id, trace_id : s
         logger.error(f"{trace_id}: {e}")
         error_msg = f"Error in LLM model mail generation: {str(e)}"
         await update_failed_reason(task_id, db, error_msg, trace_id)
-        return JSONResponse(content={"message": error_msg}, status_code = INTERNAL_SERVER_ERROR)
+        # print({e})
+        raise HTTPException(status_code = INTERNAL_SERVER_ERROR, detail = f'{e}')
     
 

@@ -27,8 +27,6 @@ async def user_data(user_id, request : Request, db :Session = Depends(get_db), t
     
     try:
         response = await validate_input_data(request, trace_id)
-        llm_id =  add_to_llmjob_table(response['validated_item'], db, trace_id)
-        task_id =  add_task(llm_id, response['reference_list'], user_id, db, trace_id)
         
     except Exception as e:
         logger.error(f"{trace_id}: {e}")
@@ -36,23 +34,29 @@ async def user_data(user_id, request : Request, db :Session = Depends(get_db), t
         return JSONResponse(content={"message": error_msg}, status_code = UNPROCESSABLE_ENTITY)
     
     try:
-        await update_task_status(task_id, db, 'Inprogress',user_id, trace_id)
-        email_response = await generate_email(response,db,llm_id,task_id,user_id,trace_id)
-        await update_task_status(task_id, db, 'Completed', user_id, trace_id)
-        res = email_response.body.decode('utf-8')
-        # res_with_newline=res.replace("\\n","\n")
+        llm_id =  add_to_llmjob_table(response['validated_item'], db, trace_id)
+        task_id =  add_task(llm_id, response['reference_list'], user_id, db, trace_id)
 
-        
-        logger.info("Email generated successfully")
-        # email_with_newline = Response(content=res_with_newline, media_type="text/plain")
-        return email_response
+    except Exception as e:
+        logger.error(f'{trace_id} : {e}')
+        return JSONResponse(content = {"message" : f'{str(e)}'})
+    
+    try:
+        await update_task_status(task_id, db, 'Inprogress',user_id, trace_id)
+        print('before')
+        email_response = await generate_email(response,db,llm_id,task_id,user_id,trace_id)
+        print(email_response)
+
+        if(email_response.status_code < 400):
+            logger.info("Email generated successfully")
+            await update_task_status(task_id, db, 'Completed', user_id, trace_id)
+            return email_response
     
     except Exception as e:
+        await update_task_status(task_id, db, 'Failed', user_id, trace_id)
+        await update_failed_reason(task_id,db,str({e}),trace_id)
         logger.error(f"{trace_id} : Task has been terminated {e}")
-        error_msg = f"Error in updating the task: {str(e)}"
-        update_task_status(task_id, db, 'Failed', user_id, trace_id)
-        update_failed_reason(task_id,db,error_msg,trace_id)
-        return JSONResponse(content={"message": error_msg}, status_code = INTERNAL_SERVER_ERROR)
+        return JSONResponse(content={"message": f'{str(e)}'}, status_code = INTERNAL_SERVER_ERROR)
 
 
 @router.post("/{user_id}/regenerate")
