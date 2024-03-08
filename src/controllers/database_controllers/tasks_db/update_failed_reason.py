@@ -12,6 +12,21 @@ from src.utils.constants import *
 from sqlalchemy import func
 
 async def update_failed_reason(task_id, db, error_msg, trace_id):
+
+    """
+    Updates the failure reason for a task with the specified task ID in the database.
+ 
+    Args:
+    - task_id: The ID of the task to be updated.
+    - db: The database session to perform the database operations.
+    - error_msg: The error message to be set as the failure reason.
+    - trace_id: A unique identifier for tracing purposes. If not provided, a new UUID will be generated.
+ 
+    Raises:
+    HTTPException: If an error occurs during the database operation,
+                   an HTTPException with status code 500 (Internal Server Error) is raised.
+    """
+    
     if(not trace_id):
         trace_id = str(uuid.uuid4())
 

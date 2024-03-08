@@ -22,6 +22,24 @@ router = APIRouter()
 
 @router.post("/{user_id}/email")
 async def user_data(user_id, request : Request, db :Session = Depends(get_db), trace_id : str = None):
+
+    """
+    Processes user data, validates input, generates email, and updates task status accordingly.
+ 
+    Args:
+    - user_id: The ID of the user submitting the data.
+    - request: The FastAPI Request object containing user data.
+    - db: The database session to perform the database operations.
+    - trace_id: A unique identifier for tracing purposes. If not provided, a new UUID will be generated.
+ 
+    Returns:
+    A Response containing the generated email body.
+ 
+    Raises:
+    HTTPException: If an error occurs during the data processing, validation, or email generation,
+                   an HTTPException with the appropriate status code is raised.
+    """
+
     if(not trace_id):
         trace_id = str(uuid.uuid4())
     
@@ -61,6 +79,24 @@ async def user_data(user_id, request : Request, db :Session = Depends(get_db), t
 
 @router.post("/{user_id}/regenerate")
 async def regenerate(request : Request, user_id,  db :Session = Depends(get_db), trace_id:str = None):
+
+    """
+    Regenerates an email based on the provided email body, subject, and language model ID.
+ 
+    Args:
+    - request: The FastAPI Request object containing the JSON body with 'body', 'subject', and 'llm_id'.
+    - user_id: The ID of the user regenerating the email.
+    - db: The database session to perform the database operations.
+    - trace_id: A unique identifier for tracing purposes. If not provided, a new UUID will be generated.
+ 
+    Returns:
+    A Response containing the regenerated email body.
+ 
+    Raises:
+    HTTPException: If an error occurs during the email regeneration or database operation,
+                   an HTTPException with the appropriate status code is raised.
+    """
+    
     if(not trace_id):
         trace_id = str(uuid.uuid4())
     try:

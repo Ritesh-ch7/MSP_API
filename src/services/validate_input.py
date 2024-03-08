@@ -9,6 +9,22 @@ from src.services.add_missing_fields import add_missing_fields
 
 
 async def validate_input_data(request: Request,trace_id:str = None):
+
+    """
+    Validates the input data from the client request and converts it into a valid Ticket object.
+ 
+    Args:
+    - request: The FastAPI Request object containing the client's input data.
+    - trace_id: A unique identifier for tracing purposes. If not provided, a new UUID will be generated.
+ 
+    Returns:
+    A dictionary containing the validated Ticket object and the reference list.
+ 
+    Raises:
+    HTTPException: If an error occurs during the data validation,
+                   an HTTPException with the appropriate status code and message is raised.
+    """
+    
     if trace_id == None:
         trace_id = str(uuid.uuid4())
     try:
