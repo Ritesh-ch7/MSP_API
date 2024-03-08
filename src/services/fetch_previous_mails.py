@@ -12,6 +12,23 @@ from src.utils.constants import *
 from sqlalchemy import func
 
 async def fetch_prev_mails(llm_id, db, trace_id):
+
+    """
+    Fetches a list of previous emails associated with the given LLM (Large Language Model) ID from the database.
+ 
+    Args:
+    - llm_id: The LLM ID for which to retrieve previous emails.
+    - db: The database session to perform the database operations.
+    - trace_id: A unique identifier for tracing purposes. If not provided, a new UUID will be generated.
+ 
+    Returns:
+    A list of previous emails as dictionaries, each containing a 'body' field.
+ 
+    Raises:
+    HTTPException: If an error occurs during the database operation,
+                   an HTTPException with status code 500 (Internal Server Error) is raised.
+    """
+    
     if(not trace_id):
         trace_id = str(uuid.uuid4())
 

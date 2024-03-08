@@ -5,6 +5,18 @@ import uuid
 from src.config.logger_config import new_logger as logger
 
 def validate_reference_item(item):
+
+    """
+    Validates a reference item to ensure it has the required attributes and valid values.
+ 
+    Args:
+    - item: The reference item dictionary to be validated.
+ 
+    Raises:
+    HTTPException: If the reference item is invalid,
+                   an HTTPException with status code 422 (Unprocessable Entity) and a detailed message is raised.
+    """
+
     if "ref" not in item:
         raise HTTPException(status_code=422, detail="Missing 'ref' attribute in the reference item")
 
@@ -30,5 +42,17 @@ def validate_reference_item(item):
         raise HTTPException(status_code=422, detail="Invalid data type in ticket_id in the reference item: expected int")
 
 def validate_reference_list(reference_list: List[dict]):
+
+    """
+    Validates a list of reference items to ensure each item has the required attributes and valid values.
+ 
+    Args:
+    - reference_list: A list of reference item dictionaries to be validated.
+ 
+    Raises:
+    HTTPException: If any reference item in the list is invalid,
+                   an HTTPException with status code 422 (Unprocessable Entity) and a detailed message is raised.
+    """
+    
     for item in reference_list:
         validate_reference_item(item)

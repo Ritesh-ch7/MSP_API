@@ -6,6 +6,21 @@ from fastapi import HTTPException
 from src.utils.constants import *
 
 def check_openai_api_key(openai_key, trace_id):
+
+    """
+    Verifies the validity of an OpenAI API key.
+ 
+    Parameters:
+    - openai_key (str): The OpenAI API key to be checked.
+    - trace_id (str, optional): A unique identifier for tracing purposes. If not provided, a new one is generated.
+ 
+    Returns:
+    - str: The validated OpenAI API key.
+ 
+    Raises:
+    - HTTPException: If the OpenAI API key is expired (403) or invalid (401).
+    """
+
     if not trace_id:
         trace_id = str(uuid.uuid4())
     openai.api_key = openai_key
