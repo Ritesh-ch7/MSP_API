@@ -39,7 +39,7 @@ def no_shot_service_body_template(ticket_id,requestor_name,title,description,pri
     if trace_id == None:
         trace_id = str(uuid.uuid4())
     try:
-
+        print(status)
         no_shot_template=PromptTemplate(
             input_variables=["ticket_id","requestor_name","title","description","priority","severity","ticket_type", "source","status"],
             template=NO_SHOT_PROMPT_service
