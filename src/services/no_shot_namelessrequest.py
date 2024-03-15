@@ -12,15 +12,16 @@ load_dotenv()
 api_key = os.getenv("API_KEY")
  
 llm1 = ChatOpenAI(openai_api_key=api_key, temperature=0.3)
+
  
  
-def subject_generator(ticket_id,requestor_name,title,priority,severity,trace_id:str = None):
+def no_shot_nameless_body_template(ticket_id,title,description,priority,severity,ticket_type, status,trace_id:str = None):
 
     """
-    Generates an email subject using a template based on the provided input variables.
+    Generates an email body using a template for cases with no user-provided examples.
  
     Args:
-    - ticket_id: The ID of the ticket associated with the email subject.
+    - ticket_id: The ID of the ticket associated with the email.
     - requestor_name: The name of the requester associated with the ticket.
     - description: The description of the ticket.
     - priority: The priority of the ticket.
@@ -28,30 +29,29 @@ def subject_generator(ticket_id,requestor_name,title,priority,severity,trace_id:
     - trace_id: A unique identifier for tracing purposes. If not provided, a new UUID will be generated.
  
     Returns:
-    The generated email subject.
+    The generated email body.
  
     Raises:
-    HTTPException: If an error occurs during the email subject generation,
+    HTTPException: If an error occurs during the email generation,
                    an HTTPException with status code 500 (Internal Server Error) is raised.
     """
-    
+
     if trace_id == None:
         trace_id = str(uuid.uuid4())
     try:
 
         no_shot_template=PromptTemplate(
-            input_variables=["ticket_id","requestor_name","title","priority","severity"],
-            template=SUBJECT_PROMPT
+            input_variables=["ticket_id","title","description","priority","severity","ticket_type", "status"],
+            template=NO_SHOT_PROMPT_nameless
         )
        
-        query=no_shot_template.format(ticket_id=ticket_id, requestor_name=requestor_name, title=title, priority=priority, severity=severity)
+        query=no_shot_template.format(ticket_id=ticket_id, title=title,description=description, priority=priority, severity=severity, ticket_type=ticket_type, status=status)
         res =  llm1.invoke(query)
 
-        logger.debug(f'{trace_id} email subject has been generated')
-        
+        logger.debug(f'{trace_id} email for no shot has been generated')
         return res.content
     
     except Exception as e:
-        logger.error(f'{trace_id} email subject cant be generated for{e}')
+        logger.error(f'{trace_id} email cant be generated {e}')
         raise HTTPException(status_code=INTERNAL_SERVER_ERROR, detail=f"Internal Server Error: {str(e)}")
     

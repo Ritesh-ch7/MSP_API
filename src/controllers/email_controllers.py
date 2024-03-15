@@ -1,6 +1,10 @@
 from fastapi.responses import JSONResponse
 from src.services.fewshot_service import few_shot_body_template
 from src.services.noshot_service import no_shot_body_template
+from src.services.no_shot_servicerequest import no_shot_service_body_template
+from src.services.no_shot_incidentrequest import no_shot_incident_body_template
+from src.services.no_shot_namelessrequest import no_shot_nameless_body_template
+
 from src.schemas.users import *
 import uuid, json
 from src.config.logger_config import new_logger as logger
@@ -45,9 +49,20 @@ async def generate_email(response: any,db,llm_id, task_id, user_id, trace_id : s
         api_key = os.getenv('API_KEY')
         if(len(reference)==0):
             # no shot
-            mail_subject = subject_generator(validated_item.ticket_id,validated_item.requestor_name,validated_item.description,validated_item.priority,validated_item.severity,trace_id)
+            mail_subject = subject_generator(validated_item.ticket_id,validated_item.requestor_name,validated_item.title,validated_item.priority,validated_item.severity,trace_id)
             
-            mail_body =  no_shot_body_template(validated_item.ticket_id,validated_item.requestor_name,validated_item.description,validated_item.priority,validated_item.severity,trace_id)
+            if validated_item.ticket_type=='Service Request':
+                print(validated_item.status.value)
+                mail_body =  no_shot_service_body_template(validated_item.ticket_id,validated_item.requestor_name,validated_item.title,validated_item.description,validated_item.priority,validated_item.severity,validated_item.ticket_type,validated_item.source,validated_item.status.value,trace_id)
+
+            else:
+                # mail_body =  no_shot_incident_body_template(validated_item.ticket_id,validated_item.company_name,validated_item.title,validated_item.description,validated_item.priority,validated_item.severity,validated_item.ticket_type, validated_item.status.value,trace_id)
+
+                mail_body =  no_shot_nameless_body_template(validated_item.ticket_id,validated_item.title,validated_item.description,validated_item.priority,validated_item.severity,validated_item.ticket_type, validated_item.status.value,trace_id)
+
+
+
+            
 
             mail_json_text = json.dumps({'subject':mail_subject, 'body' : mail_body})
             mail_json_form = json.loads(mail_json_text)

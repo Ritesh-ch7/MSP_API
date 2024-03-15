@@ -42,12 +42,13 @@ def add_to_llmjob_table(ticket : Ticket, db:Session, trace_id : str = None):
         
         llm_job_record = {
             snake_to_pascal('ticket_type'): ticket.ticket_type.value,
-            snake_to_pascal('service'): ticket.service.value,
+            snake_to_pascal('source'): ticket.source,
             snake_to_pascal('priority'): ticket.priority.value,
             snake_to_pascal('severity'): ticket.severity,
             snake_to_pascal('requestor_name'): ticket.requestor_name,
             snake_to_pascal('description'): ticket.description,
-            snake_to_pascal('ticket_id'): ticket.ticket_id
+            snake_to_pascal('ticket_id'): ticket.ticket_id,
+            snake_to_pascal('company_name'): ticket.company_name
         }
 
         llm_job_record = LLM(**llm_job_record)
