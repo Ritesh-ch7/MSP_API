@@ -10,7 +10,7 @@ class LLM(base):
     Id = Column(Integer,primary_key=True,autoincrement=True)
     TicketId = Column(String(20), unique=True)
     RequestorName = Column(String(50),nullable = True)
-    Severity = Column(Enum('Severity1','Severity2','Severity3','Severity4'),nullable = True)
+    Severity = Column(Enum('Critical','High','Medium','Low'),nullable = True)
     Priority = Column(Enum('Low','Medium','High'), default='Low')
     TicketType = Column(Enum('Incident','Service Request'),nullable = True)
     Source = Column(Enum('Phonecall', 'Email'),nullable = True)

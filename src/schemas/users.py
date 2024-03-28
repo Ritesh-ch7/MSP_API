@@ -21,10 +21,10 @@ class Status(str, Enum):
     Inprogress = "Inprogress"
 
 class Severity(str, Enum):
-    Severity1 = "Severity1"
-    Severity2 = "Severity2"
-    Severity3 = "Severity3"
-    Severity4 = "Severity4"
+    Critical = "Critical"
+    High = "High"
+    Medium = "Medium"
+    Low = "Low"
 
 class Ticket(BaseModel):
     ticket_id: str
@@ -37,3 +37,4 @@ class Ticket(BaseModel):
     title: str
     status: Status
     company_name: Optional[str] = None
+    sla: str

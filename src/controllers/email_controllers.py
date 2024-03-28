@@ -53,12 +53,14 @@ async def generate_email(response: any,db,llm_id, task_id, user_id, trace_id : s
             
             if validated_item.ticket_type=='Service Request':
                 print(validated_item.status.value)
-                mail_body =  no_shot_service_body_template(validated_item.ticket_id,validated_item.requestor_name,validated_item.title,validated_item.description,validated_item.priority,validated_item.severity,validated_item.ticket_type,validated_item.source,validated_item.status.value,trace_id)
+                print(validated_item.sla)
+                mail_body =  no_shot_service_body_template(validated_item.ticket_id,validated_item.requestor_name,validated_item.title,validated_item.description,validated_item.priority,validated_item.severity,validated_item.ticket_type,validated_item.source.value,validated_item.status.value,validated_item.sla,trace_id)
 
             else:
-                # mail_body =  no_shot_incident_body_template(validated_item.ticket_id,validated_item.company_name,validated_item.title,validated_item.description,validated_item.priority,validated_item.severity,validated_item.ticket_type, validated_item.status.value,trace_id)
+                
+                mail_body =  no_shot_incident_body_template(validated_item.ticket_id,validated_item.company_name,validated_item.title,validated_item.description,validated_item.priority,validated_item.severity,validated_item.ticket_type, validated_item.status.value,validated_item.sla, trace_id)
 
-                mail_body =  no_shot_nameless_body_template(validated_item.ticket_id,validated_item.title,validated_item.description,validated_item.priority,validated_item.severity,validated_item.ticket_type, validated_item.status.value,trace_id)
+                # mail_body =  no_shot_nameless_body_template(validated_item.ticket_id,validated_item.title,validated_item.description,validated_item.priority,validated_item.severity,validated_item.ticket_type, validated_item.status.value,trace_id)
 
 
 

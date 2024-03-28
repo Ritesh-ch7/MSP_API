@@ -15,7 +15,7 @@ llm1 = ChatOpenAI(openai_api_key=api_key, temperature=0.3)
 
  
  
-def no_shot_service_body_template(ticket_id,requestor_name,title,description,priority,severity,ticket_type, source,status,trace_id:str = None):
+def no_shot_service_body_template(ticket_id,requestor_name,title,description,priority,severity,ticket_type, source,status, sla,trace_id:str = None):
 
     """
     Generates an email body using a template for cases with no user-provided examples.
@@ -39,13 +39,13 @@ def no_shot_service_body_template(ticket_id,requestor_name,title,description,pri
     if trace_id == None:
         trace_id = str(uuid.uuid4())
     try:
-        print(status)
+
         no_shot_template=PromptTemplate(
-            input_variables=["ticket_id","requestor_name","title","description","priority","severity","ticket_type", "source","status"],
+            input_variables=["ticket_id","requestor_name","title","description","priority","severity","ticket_type", "source","status","sla"],
             template=NO_SHOT_PROMPT_service
         )
        
-        query=no_shot_template.format(ticket_id=ticket_id, requestor_name=requestor_name, title=title,description=description, priority=priority, severity=severity, ticket_type=ticket_type, source=source, status=status)
+        query=no_shot_template.format(ticket_id=ticket_id, requestor_name=requestor_name, title=title,description=description, priority=priority, severity=severity, ticket_type=ticket_type, source=source, status=status, sla=sla)
         res =  llm1.invoke(query)
 
         logger.debug(f'{trace_id} email for no shot has been generated')

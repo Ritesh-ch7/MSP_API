@@ -11,11 +11,11 @@ from src.config.logger_config import new_logger as logger
 load_dotenv()
 api_key = os.getenv("API_KEY")
  
-llm1 = ChatOpenAI(openai_api_key=api_key, temperature=0.3)
+llm1 = ChatOpenAI(openai_api_key=api_key, temperature=0.1)
 
  
  
-def no_shot_incident_body_template(ticket_id,company_name,title,description,priority,severity,ticket_type, status,trace_id:str = None):
+def no_shot_incident_body_template(ticket_id,company_name,title,description,priority,severity,ticket_type, status, sla, trace_id:str = None):
 
     """
     Generates an email body using a template for cases with no user-provided examples.
@@ -36,17 +36,23 @@ def no_shot_incident_body_template(ticket_id,company_name,title,description,prio
                    an HTTPException with status code 500 (Internal Server Error) is raised.
     """
 
-    "ticket_id","company_name","title","description","priority","severity","ticket_type","status"
+    
     if trace_id == None:
         trace_id = str(uuid.uuid4())
     try:
 
+
+
         no_shot_template=PromptTemplate(
-            input_variables=["ticket_id","company_name","title","description","priority","severity","ticket_type", "status"],
+            input_variables=["ticket_id","company_name","title","description","priority","severity","ticket_type", "status", "sla"],
             template=NO_SHOT_PROMPT_incident
         )
        
-        query=no_shot_template.format(ticket_id=ticket_id, company_name=company_name, title=title,description=description, priority=priority, severity=severity, ticket_type=ticket_type, status=status)
+
+
+
+
+        query=no_shot_template.format(ticket_id=ticket_id, company_name=company_name, title=title,description=description, priority=priority, severity=severity, ticket_type=ticket_type, status=status, sla=sla)
         res =  llm1.invoke(query)
 
         logger.debug(f'{trace_id} email for no shot has been generated')
